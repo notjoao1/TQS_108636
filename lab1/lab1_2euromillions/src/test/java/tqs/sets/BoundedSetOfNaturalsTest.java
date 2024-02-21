@@ -81,7 +81,7 @@ class BoundedSetOfNaturalsTest {
         assertThrows(IllegalArgumentException.class, () -> setA.add(elems));
     }
 
-    @DisplayName("Adding from an array that would exceed maximum size of set throws IllegalArgumentException")
+    @DisplayName("Adding to an array that would exceed maximum size of set throws IllegalArgumentException")
     @Test
     public void testAddFromArrayOverflowSize() {
         int[] elems = new int[] { 10, 20, 30 };
