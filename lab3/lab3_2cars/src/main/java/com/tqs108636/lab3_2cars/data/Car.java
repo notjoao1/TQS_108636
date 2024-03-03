@@ -1,6 +1,8 @@
 package com.tqs108636.lab3_2cars.data;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.util.Objects;
@@ -8,6 +10,7 @@ import java.util.Objects;
 @Entity
 public class Car {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long carId;
 
     private String maker;
