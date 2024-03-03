@@ -1,5 +1,6 @@
 package com.tqs108636.lab3_2cars;
 
+import com.tqs108636.lab3_2cars.controller.CarController;
 import com.tqs108636.lab3_2cars.data.Car;
 import com.tqs108636.lab3_2cars.service.CarManagerService;
 
@@ -11,9 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 // This class will not initialize the full application context. We only need to test the controller - use mock service
-@WebMvcTest(CarController_MockServiceTest.class)
+@WebMvcTest(CarController.class)
 public class CarController_MockServiceTest {
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +53,11 @@ public class CarController_MockServiceTest {
         ArrayList<Car> cars = new ArrayList<>(Arrays.asList(car1, car2));
         when(carService.getAllCars()).thenReturn(cars);
 
-        mockMvc.perform(get("/api/cars")).andExpectAll(status().isOk(), jsonPath("$", hasItems(car1, car2)));
+        mockMvc.perform(get("/api/cars").contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(status().isOk(),
+                        jsonPath("$[0].carId").value(car1.getCarId()),
+                        jsonPath("$[1].carId").value(car2.getCarId()));
+
         verify(carService, times(1)).getAllCars();
     }
 
@@ -63,7 +66,7 @@ public class CarController_MockServiceTest {
         when(carService.getCarDetails(car1.getCarId())).thenReturn(Optional.of(car1));
 
         mockMvc.perform(get("/api/cars/1"))
-                .andExpect(jsonPath("$[0].carId", is(1L)));
+                .andExpect(jsonPath("$.carId", is(1)));
         verify(carService, times(1)).getCarDetails(1L);
 
     }
@@ -96,17 +99,25 @@ public class CarController_MockServiceTest {
     public void testGetInvalidMaker_thenReturnNotFound() throws Exception {
         when(carService.getCarsByMaker("empty")).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/api/cars?maker=empty")).andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", empty()));
+        mockMvc.perform(get("/api/cars?maker=empty"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").doesNotExist());
         verify(carService, times(1)).getCarsByMaker("empty");
     }
 
     @Test
     public void testGetInvalidIDCar() throws Exception {
-        when(carService.getCarDetails(-1L)).thenReturn(null);
+        when(carService.getCarDetails(-1L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/cars/-1")).andExpect(status().isNotFound()).andExpect(jsonPath("$", empty()));
+        mockMvc.perform(get("/api/cars/-1")).andExpect(status().isNotFound()).andExpect(jsonPath("$").doesNotExist());
         verify(carService, times(1)).getCarDetails(-1L);
+    }
+
+    @Test
+    public void testPostNullCar() throws Exception {
+        when(carService.save(null)).thenReturn(null);
+
+        mockMvc.perform(post("/api/cars")).andExpect(status().isBadRequest()).andExpect(jsonPath("$").doesNotExist());
     }
 
 }

@@ -3,7 +3,6 @@ package com.tqs108636.lab3_2cars;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,15 +21,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.tqs108636.lab3_2cars.data.Car;
 import com.tqs108636.lab3_2cars.data.CarRepository;
-import com.tqs108636.lab3_2cars.service.CarManagerService;
+import com.tqs108636.lab3_2cars.service.CarManagerServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class CarService_MockRepositoryTest {
-    @InjectMocks
+    @Mock(lenient = true)
     private CarRepository carRepository;
 
-    @Mock
-    private CarManagerService carManagerService;
+    @InjectMocks
+    private CarManagerServiceImpl carManagerService;
 
     private Car car1, car2, car3;
 
@@ -46,9 +46,9 @@ public class CarService_MockRepositoryTest {
 
         List<Car> allRenaults = new ArrayList<>(Arrays.asList(car1, car3));
 
-        when(carRepository.findByCarId(1000L)).thenReturn(car1);
-        when(carRepository.findByCarId(5000L)).thenReturn(car2);
-        when(carRepository.findByCarId(10000L)).thenReturn(car3);
+        when(carRepository.findByCarId(1000L)).thenReturn(Optional.of(car1));
+        when(carRepository.findByCarId(5000L)).thenReturn(Optional.of(car2));
+        when(carRepository.findByCarId(10000L)).thenReturn(Optional.of(car3));
         when(carRepository.findByMaker("Renault")).thenReturn(allRenaults);
         when(carRepository.findAll()).thenReturn(allCars);
     }
@@ -62,10 +62,10 @@ public class CarService_MockRepositoryTest {
 
     @Test
     public void whenGetInvalidCar_thenReturnEmptyOptional() {
-        when(carRepository.findByCarId(1L)); // doesn't exist
+        when(carRepository.findByCarId(1L)).thenReturn(Optional.empty()); // doesn't exist
 
         assertTrue(carManagerService.getCarDetails(1L).isEmpty());
-        verify(carRepository, times(1)).findById(anyLong());
+        verify(carRepository, times(1)).findByCarId(1L);
     }
 
     @Test

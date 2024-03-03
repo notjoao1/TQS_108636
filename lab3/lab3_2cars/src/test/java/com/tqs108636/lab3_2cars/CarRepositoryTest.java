@@ -37,10 +37,10 @@ public class CarRepositoryTest {
 
     @Test
     void whenFindById1_thenReturnId1() {
-        Car car1 = new Car(1L, "Nissan", "350Z");
+        Car car1 = new Car("Nissan", "350Z");
         entityManager.persistAndFlush(car1);
 
-        assertThat(carRepository.findById(1L)).isEqualTo(car1);
+        assertThat(carRepository.findById(car1.getCarId())).isNotEmpty().hasValue(car1);
     }
 
     @Test
@@ -51,10 +51,9 @@ public class CarRepositoryTest {
 
     @Test
     void given3Cars_whenFindAll_thenReturnAll3Cars() {
-        Car car1, car2, car3;
-        car1 = new Car("1", "1");
-        car2 = new Car("2", "2");
-        car3 = new Car("3", "3");
+        Car car1 = new Car("1", "1");
+        Car car2 = new Car("2", "2");
+        Car car3 = new Car("3", "3");
         entityManager.persist(car1);
         entityManager.persist(car2);
         entityManager.persist(car3);
