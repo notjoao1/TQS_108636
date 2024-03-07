@@ -31,12 +31,12 @@ class WebDriverManagerTest {
     @Test
     void test() {
         // Exercise
-        String sutUrl = "https://bonigarcia.dev/selenium-webdriver-java/";
+        String sutUrl = "https://pi-propertease.github.io/";
         driver.get(sutUrl);
         String title = driver.getTitle();
 
         // Verify
-        assertThat(title).isEqualTo("Hands-On Selenium WebDriver with Java");
+        assertThat(title).isEqualTo("Hello from PropertEase | PropertEase");
     }
 
     @AfterEach
