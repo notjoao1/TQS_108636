@@ -35,3 +35,9 @@
 ![Technical Debt](assets/technical_debt.png)
 
 ## Lab 6.2 B)
+
+- After fixing the major and critical code smells, running the linter showed the following results:
+
+![Issues After Fixes](assets/issues_after_fix.png)
+
+- The number of issues went down, now all there is are minor and "info" code smells.

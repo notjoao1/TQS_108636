@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.tqs108636.lab3_2cars.data.Car;
 import com.tqs108636.lab3_2cars.data.CarRepository;
+import com.tqs108636.lab3_2cars.dto.CarDTO;
 import com.tqs108636.lab3_2cars.service.CarManagerServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +34,8 @@ public class CarService_MockRepositoryTest {
 
     private Car car1, car2, car3;
 
+    private CarDTO carDTO1, carDTO2, carDTO3;
+
     @BeforeEach
     void setup() {
         car1 = new Car("Renault", "Megane");
@@ -41,6 +44,13 @@ public class CarService_MockRepositoryTest {
         car2.setCarId(5000L);
         car3 = new Car("Renault", "Clio");
         car3.setCarId(10000L);
+
+        carDTO1 = new CarDTO("Renault", "Megane");
+        carDTO1.setCarId(1000L);
+        carDTO2 = new CarDTO("Nissan", "350Z");
+        carDTO2.setCarId(5000L);
+        carDTO3 = new CarDTO("Renault", "Clio");
+        carDTO3.setCarId(10000L);
 
         List<Car> allCars = new ArrayList<>(Arrays.asList(car1, car2, car3));
 
@@ -57,7 +67,7 @@ public class CarService_MockRepositoryTest {
     public void whenSaveCar1_ThenReturnCar1() {
         when(carRepository.save(car1)).thenReturn(car1);
 
-        assertEquals(carManagerService.save(car1), car1);
+        assertEquals(carManagerService.save(carDTO1), car1);
     }
 
     @Test

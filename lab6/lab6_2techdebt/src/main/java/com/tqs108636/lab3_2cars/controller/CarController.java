@@ -1,6 +1,7 @@
 package com.tqs108636.lab3_2cars.controller;
 
 import com.tqs108636.lab3_2cars.data.Car;
+import com.tqs108636.lab3_2cars.dto.CarDTO;
 import com.tqs108636.lab3_2cars.service.CarManagerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ public class CarController {
     }
 
     @PostMapping()
-    public ResponseEntity<Car> createCar(@RequestBody Car car) {
-        if (car == null) {
+    public ResponseEntity<Car> createCar(@RequestBody CarDTO car) {
+        if (car == null || carService.getCarDetails(car.getCarId()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
         return new ResponseEntity<Car>(carService.save(car), HttpStatus.CREATED);

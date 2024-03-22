@@ -2,6 +2,7 @@ package com.tqs108636.lab3_2cars;
 
 import com.tqs108636.lab3_2cars.controller.CarController;
 import com.tqs108636.lab3_2cars.data.Car;
+import com.tqs108636.lab3_2cars.dto.CarDTO;
 import com.tqs108636.lab3_2cars.service.CarManagerService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,10 +38,19 @@ public class CarController_MockServiceTest {
     @MockBean
     private CarManagerService carService; // mock service
 
+    private CarDTO carDTO1, carDTO2, carDTO3;
+
     private Car car1, car2, car3;
 
     @BeforeEach
     public void setup() {
+        carDTO1 = new CarDTO("Renault", "Megane");
+        carDTO1.setCarId(1L);
+        carDTO2 = new CarDTO("Nissan", "350Z");
+        carDTO2.setCarId(1000L);
+        carDTO3 = new CarDTO("Renault", "Clio");
+        carDTO3.setCarId(10000L);
+
         car1 = new Car("Renault", "Megane");
         car1.setCarId(1L);
         car2 = new Car("Nissan", "350Z");
@@ -74,16 +85,16 @@ public class CarController_MockServiceTest {
     @Test
     public void testPostCar() throws Exception {
         // mock behaviour -> always return car1 on save
-        when(carService.save(car1)).thenReturn(car1);
+        when(carService.save(any())).thenReturn(car1);
 
         mockMvc.perform(
-                post("/api/cars").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(car1)))
+                post("/api/cars").contentType(MediaType.APPLICATION_JSON).content(JsonUtils.toJson(carDTO1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.maker", is("Renault")))
                 .andExpect(jsonPath("$.model", is("Megane")));
 
         // carService.save(car1) should be called a single time
-        verify(carService, times(1)).save(car1);
+        verify(carService, times(1)).save(any());
     }
 
     @Test

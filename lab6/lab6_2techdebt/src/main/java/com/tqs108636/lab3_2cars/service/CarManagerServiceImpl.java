@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.tqs108636.lab3_2cars.data.Car;
 import com.tqs108636.lab3_2cars.data.CarRepository;
+import com.tqs108636.lab3_2cars.dto.CarDTO;
 
 @Service
 public class CarManagerServiceImpl implements CarManagerService {
@@ -20,8 +21,12 @@ public class CarManagerServiceImpl implements CarManagerService {
     }
 
     @Override
-    public Car save(Car c) {
-        return carRepository.save(c);
+    public Car save(CarDTO carDTO) {
+        Car car = new Car();
+        car.setModel(carDTO.getModel());
+        car.setMaker(carDTO.getMaker());
+        car.setCarId(carDTO.getCarId());
+        return carRepository.save(car);
     }
 
     @Override
