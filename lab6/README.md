@@ -52,3 +52,21 @@
 
 - These values are not necessarily bad, as uncovered lines could be hashCode, toString and similar methods. 
 - But in this case, the uncovered lines are business logic code, handling cases of invalid behaviour (passing null to certain functions, for example), so it would ideally be covered aswell in testing.
+
+
+## Lab 6.3 A)
+
+![IES SonarQube analysis results](assets/IES_analysis.png)
+
+
+- The defined quality gate:
+
+![IES Quality Gate](assets/IES_quality_gate.png)
+
+    - At most, 5 general issues, since missing 2 or 3 of unused imports in code doesn't instantly mean it should fail the quality gate and require a commit to fix
+    - At least 80% code coverage - obviously, in IES we have 0% code coverage, since we didn't test our solution, but it's important either way. 80% means we want most code covered, but not every single line, since some lines could be debug related (toString() methods, for example).
+    - All security hotspots should be reviewed when new code is inserted - security is extremely important and no possible vulnerabilities should be left in code.
+    - At most 3% duplicated lines. We should, for example, abstract code that is used multiple times in method calls, to improve readability and reduce the amount of code in a codebase.
+    - At most 0 critical issues - these may be dangerous vulnerabilities (for example, serialization related issues) or really bad for the maintainability of code (for example, lower case CONSTANTS).
+    - At most 0 major issues - these may also be security vulnerabilities or maintainability issues and will amount to a lot of technical debt if not dealt with.
+    - At most 0 vulnerabilities, security should be taken seriously.
