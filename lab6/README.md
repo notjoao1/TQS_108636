@@ -41,3 +41,14 @@
 ![Issues After Fixes](assets/issues_after_fix.png)
 
 - The number of issues went down, now all there is are minor and "info" code smells.
+
+## Lab 6.2 C)
+
+- The code coverage is at 78.1%
+
+![Coverage in Dashboard](assets/coverage.png)
+
+- There are 17 uncovered lines (out of total 80) and 4 uncovered conditions
+
+- These values are not necessarily bad, as uncovered lines could be hashCode, toString and similar methods. 
+- But in this case, the uncovered lines are business logic code, handling cases of invalid behaviour (passing null to certain functions, for example), so it would ideally be covered aswell in testing.
