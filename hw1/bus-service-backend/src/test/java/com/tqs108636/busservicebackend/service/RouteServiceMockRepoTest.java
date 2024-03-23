@@ -108,4 +108,27 @@ class RouteServiceMockRepoTest {
 
         verify(routeRepository, times(1)).findAll();
     }
+
+    @Test
+    void testFindValidRouteById() {
+        when(routeRepository.findById(3L)).thenReturn(Optional.of(route3));
+
+        Optional<Route> foundRoute = routeService.findById(3L);
+
+        assertTrue(foundRoute.isPresent());
+        assertEquals(route3, foundRoute.get());
+
+        verify(routeRepository, times(1)).findById(3L);
+    }
+
+    @Test
+    void testFindInvalidRouteById() {
+        when(routeRepository.findById(1000L)).thenReturn(Optional.empty());
+
+        Optional<Route> foundRoute = routeService.findById(1000L);
+
+        assertTrue(foundRoute.isEmpty());
+
+        verify(routeRepository, times(1)).findById(1000L);
+    }
 }

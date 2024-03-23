@@ -79,4 +79,11 @@ class RouteRepositoryTest {
         assertTrue(routesStartingAveiro.contains(route3));
     }
 
+    @Test
+    void testFindStartingWithInvalidLocation() {
+        List<Route> routesStartingFaro = routeRepository.findRoutesByStartingLocation(locFaro);
+
+        assertTrue(routesStartingFaro.isEmpty());
+    }
+
 }

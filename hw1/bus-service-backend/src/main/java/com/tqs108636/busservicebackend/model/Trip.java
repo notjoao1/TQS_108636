@@ -35,7 +35,7 @@ public class Trip {
     private Date departureTime;
 
     @NotNull
-    private int priceEuro;
+    private float priceEuro;
 
     @NotNull
     private int numberOfSeats;

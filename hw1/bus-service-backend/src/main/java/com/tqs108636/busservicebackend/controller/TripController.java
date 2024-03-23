@@ -14,7 +14,8 @@ import com.tqs108636.busservicebackend.model.Trip;
 @RequestMapping("api/trips")
 public class TripController {
     @GetMapping
-    public ResponseEntity<List<Trip>> getTrips(@RequestParam Long routeId) {
+    public ResponseEntity<List<Trip>> getTrips(@RequestParam(name = "route") Long routeId,
+            @RequestParam(name = "upcoming") boolean upcoming) {
         return null;
     }
 }
