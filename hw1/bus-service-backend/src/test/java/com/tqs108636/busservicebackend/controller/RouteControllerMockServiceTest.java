@@ -58,11 +58,11 @@ class RouteControllerMockServiceTest {
         route1.setRouteStops(Arrays.asList(rs1, rs2, rs3));
 
         rs4 = new RouteStop(4L, locPorto, route2, 0, 0);
-        rs5 = new RouteStop(5L, locBraga, route1, 1, 30);
+        rs5 = new RouteStop(5L, locBraga, route2, 1, 30);
         route2.setRouteStops(Arrays.asList(rs4, rs5));
 
         rs6 = new RouteStop(6L, locAveiro, route3, 0, 0);
-        rs7 = new RouteStop(7L, locBraga, route1, 1, 60);
+        rs7 = new RouteStop(7L, locBraga, route3, 1, 60);
 
         route3.setRouteStops(Arrays.asList(rs6, rs7));
     }

@@ -45,10 +45,10 @@ class RouteRepositoryTest {
         rs3 = new RouteStop(3L, locBraga, route1, 2, 30);
 
         rs4 = new RouteStop(4L, locPorto, route2, 0, 0);
-        rs5 = new RouteStop(5L, locBraga, route1, 1, 30);
+        rs5 = new RouteStop(5L, locBraga, route2, 1, 30);
 
         rs6 = new RouteStop(6L, locAveiro, route3, 0, 0);
-        rs7 = new RouteStop(7L, locBraga, route1, 1, 60);
+        rs7 = new RouteStop(7L, locBraga, route3, 1, 60);
 
         entityManager.persist(locAveiro);
         entityManager.persist(locPorto);
@@ -84,6 +84,23 @@ class RouteRepositoryTest {
         List<Route> routesStartingFaro = routeRepository.findRoutesByStartingLocation(locFaro);
 
         assertTrue(routesStartingFaro.isEmpty());
+    }
+
+    @Test
+    void testFindByStopLocationBraga() {
+        List<Route> routesWithBraga = routeRepository.findByStopLocation(locBraga);
+
+        assertEquals(3, routesWithBraga.size());
+        assertTrue(routesWithBraga.contains(route1));
+        assertTrue(routesWithBraga.contains(route2));
+        assertTrue(routesWithBraga.contains(route3));
+    }
+
+    @Test
+    void testFindByStopLocationFaro() {
+        List<Route> routesWithFaro = routeRepository.findByStopLocation(locFaro);
+
+        assertTrue(routesWithFaro.isEmpty());
     }
 
 }
