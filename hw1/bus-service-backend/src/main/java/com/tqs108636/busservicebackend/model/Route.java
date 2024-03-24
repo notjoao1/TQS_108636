@@ -29,4 +29,8 @@ public class Route {
     @OneToMany(mappedBy = "route")
     private List<RouteStop> routeStops;
 
+    public Route(int totalDistanceKm) {
+        this.totalDistanceKm = totalDistanceKm;
+    }
+
 }

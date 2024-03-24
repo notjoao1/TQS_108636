@@ -1,15 +1,17 @@
 package com.tqs108636.busservicebackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Entity
@@ -24,15 +26,23 @@ public class RouteStop {
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
+    @NonNull
     private Location location;
 
     @ManyToOne
-    @JoinColumn(name = "route_id", nullable = false)
+    @JoinColumn(name = "route_id")
+    @JsonIgnore
+    @NonNull
     private Route route;
 
-    @NotNull
     private int stopNumber; // number of the stop (1st, 2nd, 3rd...)
 
-    @NotNull
     private float distanceKmFromLastStop;
+
+    public RouteStop(Location location, Route route, int stopNumber, float distanceKmFromLastStop) {
+        this.location = location;
+        this.route = route;
+        this.stopNumber = stopNumber;
+        this.distanceKmFromLastStop = distanceKmFromLastStop;
+    }
 }

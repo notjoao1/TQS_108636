@@ -1,6 +1,6 @@
 package com.tqs108636.busservicebackend.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,10 +10,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Entity
@@ -28,15 +28,21 @@ public class Trip {
 
     @ManyToOne
     @JoinColumn(name = "route_id", nullable = false)
+    @NonNull
     private Route route;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @NotNull
-    private Date departureTime;
+    @NonNull
+    private LocalDateTime departureTime;
 
-    @NotNull
     private float priceEuro;
 
-    @NotNull
     private int numberOfSeats;
+
+    public Trip(Route route, LocalDateTime departureTime, float priceEuro, int numberOfSeats) {
+        this.route = route;
+        this.departureTime = departureTime;
+        this.priceEuro = priceEuro;
+        this.numberOfSeats = numberOfSeats;
+    }
 }

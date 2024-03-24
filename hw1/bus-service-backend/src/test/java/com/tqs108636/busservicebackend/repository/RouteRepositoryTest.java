@@ -31,24 +31,24 @@ class RouteRepositoryTest {
     void setup() {
         // route 1: Aveiro -> Porto -> Braga
         // route 2: Braga -> Porto
-        route1 = new Route(1L, 70, null);
-        route2 = new Route(2L, 30, null);
-        route3 = new Route(3L, 60, null);
+        route1 = new Route(70);
+        route2 = new Route(30);
+        route3 = new Route(60);
 
-        locAveiro = new Location(1L, "Aveiro", null);
-        locPorto = new Location(100L, "Porto", null);
-        locBraga = new Location(10000L, "Braga", null);
-        locFaro = new Location(100000L, "Faro", null);
+        locAveiro = new Location("Aveiro");
+        locPorto = new Location("Porto");
+        locBraga = new Location("Braga");
+        locFaro = new Location("Faro");
 
-        rs1 = new RouteStop(1L, locAveiro, route1, 0, 0);
-        rs2 = new RouteStop(2L, locPorto, route1, 1, 40);
-        rs3 = new RouteStop(3L, locBraga, route1, 2, 30);
+        rs1 = new RouteStop(locAveiro, route1, 0, 0);
+        rs2 = new RouteStop(locPorto, route1, 1, 40);
+        rs3 = new RouteStop(locBraga, route1, 2, 30);
 
-        rs4 = new RouteStop(4L, locPorto, route2, 0, 0);
-        rs5 = new RouteStop(5L, locBraga, route2, 1, 30);
+        rs4 = new RouteStop(locPorto, route2, 0, 0);
+        rs5 = new RouteStop(locBraga, route2, 1, 30);
 
-        rs6 = new RouteStop(6L, locAveiro, route3, 0, 0);
-        rs7 = new RouteStop(7L, locBraga, route3, 1, 60);
+        rs6 = new RouteStop(locAveiro, route3, 0, 0);
+        rs7 = new RouteStop(locBraga, route3, 1, 60);
 
         entityManager.persist(locAveiro);
         entityManager.persist(locPorto);
@@ -74,7 +74,7 @@ class RouteRepositoryTest {
     void testFindStartingWithLocationAveiro() {
         List<Route> routesStartingAveiro = routeRepository.findRoutesByStartingLocation(locAveiro);
 
-        assertEquals(3, routesStartingAveiro.size());
+        assertEquals(2, routesStartingAveiro.size());
         assertTrue(routesStartingAveiro.contains(route1));
         assertTrue(routesStartingAveiro.contains(route3));
     }

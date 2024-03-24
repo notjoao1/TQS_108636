@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.tqs108636.busservicebackend.model.Location;
 import com.tqs108636.busservicebackend.service.ILocationService;
 
-@WebMvcTest
+@WebMvcTest(LocationController.class)
 class LocationControllerMockServiceTest {
     @Autowired
     MockMvc mockMvc;

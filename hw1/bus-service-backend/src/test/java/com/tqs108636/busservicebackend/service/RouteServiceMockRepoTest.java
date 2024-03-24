@@ -23,6 +23,7 @@ import com.tqs108636.busservicebackend.model.Route;
 import com.tqs108636.busservicebackend.model.RouteStop;
 import com.tqs108636.busservicebackend.repository.LocationRepository;
 import com.tqs108636.busservicebackend.repository.RouteRepository;
+import com.tqs108636.busservicebackend.service.impl.RouteService;
 
 @ExtendWith(MockitoExtension.class)
 class RouteServiceMockRepoTest {
@@ -33,7 +34,7 @@ class RouteServiceMockRepoTest {
     LocationRepository locationRepository;
 
     @InjectMocks
-    IRouteService routeService;
+    RouteService routeService;
 
     Location locAveiro, locPorto, locBraga, locFaro;
     RouteStop rs1, rs2, rs3, rs4, rs5, rs6, rs7;
@@ -72,7 +73,7 @@ class RouteServiceMockRepoTest {
         when(locationRepository.findByName(locAveiro.getName())).thenReturn(Optional.of(locAveiro));
         when(routeRepository.findRoutesByStartingLocation(locAveiro)).thenReturn(Arrays.asList(route1, route3));
 
-        List<Route> routesStartingAveiro = routeService.findStartingWithLocation(locAveiro);
+        List<Route> routesStartingAveiro = routeService.findStartingWithLocation(locAveiro.getName());
 
         assertEquals(2, routesStartingAveiro.size());
         assertEquals(route1, routesStartingAveiro.get(0));
@@ -87,7 +88,7 @@ class RouteServiceMockRepoTest {
         when(locationRepository.findByName(locFaro.getName())).thenReturn(Optional.of(locFaro));
         when(routeRepository.findRoutesByStartingLocation(locFaro)).thenReturn(new ArrayList<>());
 
-        List<Route> routesStartingFaro = routeService.findStartingWithLocation(locAveiro);
+        List<Route> routesStartingFaro = routeService.findStartingWithLocation(locFaro.getName());
 
         assertTrue(routesStartingFaro.isEmpty());
 
