@@ -106,7 +106,7 @@ class LocationServiceMockRepoTest {
 
     @Test
     void testFindConnectedLocationsToPorto() {
-        when(locationRepository.findById(anyLong())).thenReturn(Optional.of(locPorto));
+        when(locationRepository.findByName("Porto")).thenReturn(Optional.of(locPorto));
         when(routeRepository.findByStopLocation(locPorto)).thenReturn(Arrays.asList(route1, route2));
 
         List<Location> connectedLocations = locationService.findConnectedLocations(locPorto.getName());
@@ -117,12 +117,12 @@ class LocationServiceMockRepoTest {
         assertTrue(connectedLocations.contains(locBraga));
 
         verify(routeRepository, times(1)).findByStopLocation(locPorto);
-        verify(locationRepository, times(1)).findById(locPorto.getId());
+        verify(locationRepository, times(1)).findByName("Porto");
     }
 
     @Test
     void testFindConnectedLocationsToFaro() {
-        when(locationRepository.findById(anyLong())).thenReturn(Optional.of(locFaro));
+        when(locationRepository.findByName("Faro")).thenReturn(Optional.of(locFaro));
         when(routeRepository.findByStopLocation(locFaro)).thenReturn(new ArrayList<>());
 
         List<Location> connectedLocations = locationService.findConnectedLocations(locFaro.getName());
@@ -130,19 +130,18 @@ class LocationServiceMockRepoTest {
         assertTrue(connectedLocations.isEmpty());
 
         verify(routeRepository, times(1)).findByStopLocation(locFaro);
-        verify(locationRepository, times(1)).findById(locFaro.getId());
+        verify(locationRepository, times(1)).findByName("Faro");
 
     }
 
     @Test
     void testFindConnectedLocationsToInvalid() {
-        when(locationRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(locationRepository.findByName("lala")).thenReturn(Optional.empty());
 
         List<Location> connectedLocations = locationService.findConnectedLocations("lala");
 
         assertTrue(connectedLocations.isEmpty());
 
-        verify(locationRepository, times(1)).findById(anyLong());
         verify(routeRepository, times(0)).findByStopLocation(any());
     }
 }
