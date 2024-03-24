@@ -2,6 +2,8 @@ package com.tqs108636.busservicebackend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,7 +24,8 @@ import com.tqs108636.busservicebackend.model.Location;
 import com.tqs108636.busservicebackend.model.Route;
 import com.tqs108636.busservicebackend.model.RouteStop;
 import com.tqs108636.busservicebackend.repository.LocationRepository;
-import com.tqs108636.busservicebackend.repository.RouteStopRepository;
+import com.tqs108636.busservicebackend.repository.RouteRepository;
+import com.tqs108636.busservicebackend.service.impl.LocationService;
 
 @ExtendWith(MockitoExtension.class)
 class LocationServiceMockRepoTest {
@@ -30,10 +33,10 @@ class LocationServiceMockRepoTest {
     LocationRepository locationRepository;
 
     @Mock
-    RouteStopRepository routeStopRepository;
+    RouteRepository routeRepository;
 
     @InjectMocks
-    ILocationService locationService;
+    LocationService locationService;
 
     Location locAveiro, locPorto, locBraga, locFaro;
     RouteStop rs1, rs2, rs3, rs4, rs5;
@@ -79,27 +82,6 @@ class LocationServiceMockRepoTest {
     }
 
     @Test
-    void testFindByValidId() {
-        when(locationRepository.findById(10000L)).thenReturn(Optional.of(locBraga));
-
-        Optional<Location> foundLocation = locationRepository.findById(10000L);
-
-        assertTrue(foundLocation.isPresent());
-        assertEquals(locBraga, foundLocation.get());
-
-        verify(locationRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    void testFindByInvalidId() {
-        when(locationRepository.findById(2L)).thenReturn(Optional.empty());
-
-        Optional<Location> foundLocation = locationRepository.findById(2L);
-
-        assertTrue(foundLocation.isEmpty());
-    }
-
-    @Test
     void testFindValidLocationByName() {
         when(locationRepository.findByName(locPorto.getName())).thenReturn(Optional.of(locPorto));
 
@@ -124,26 +106,43 @@ class LocationServiceMockRepoTest {
 
     @Test
     void testFindConnectedLocationsToPorto() {
-        when(routeStopRepository.findByLocation(locPorto)).thenReturn(Arrays.asList(rs1, rs2, rs3));
+        when(locationRepository.findById(anyLong())).thenReturn(Optional.of(locPorto));
+        when(routeRepository.findByStopLocation(locPorto)).thenReturn(Arrays.asList(route1, route2));
 
-        List<Location> connectedLocations = locationService.findConnectedLocations(locPorto.getId());
+        List<Location> connectedLocations = locationService.findConnectedLocations(locPorto.getName());
 
         // Aveiro, Braga
         assertEquals(2, connectedLocations.size());
         assertTrue(connectedLocations.contains(locAveiro));
         assertTrue(connectedLocations.contains(locBraga));
 
-        verify(routeStopRepository, times(1)).findByLocation(locPorto);
+        verify(routeRepository, times(1)).findByStopLocation(locPorto);
+        verify(locationRepository, times(1)).findById(locPorto.getId());
     }
 
     @Test
     void testFindConnectedLocationsToFaro() {
-        when(routeStopRepository.findByLocation(locFaro)).thenReturn(new ArrayList<>());
+        when(locationRepository.findById(anyLong())).thenReturn(Optional.of(locFaro));
+        when(routeRepository.findByStopLocation(locFaro)).thenReturn(new ArrayList<>());
 
-        List<Location> connectedLocations = locationService.findConnectedLocations(locFaro.getId());
+        List<Location> connectedLocations = locationService.findConnectedLocations(locFaro.getName());
 
         assertTrue(connectedLocations.isEmpty());
 
-        verify(routeStopRepository, times(1)).findByLocation(locFaro);
+        verify(routeRepository, times(1)).findByStopLocation(locFaro);
+        verify(locationRepository, times(1)).findById(locFaro.getId());
+
+    }
+
+    @Test
+    void testFindConnectedLocationsToInvalid() {
+        when(locationRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        List<Location> connectedLocations = locationService.findConnectedLocations("lala");
+
+        assertTrue(connectedLocations.isEmpty());
+
+        verify(locationRepository, times(1)).findById(anyLong());
+        verify(routeRepository, times(0)).findByStopLocation(any());
     }
 }

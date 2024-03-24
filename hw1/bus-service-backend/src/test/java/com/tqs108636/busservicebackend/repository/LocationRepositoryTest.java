@@ -21,19 +21,19 @@ class LocationRepositoryTest {
 
     @Test
     void testFindByName() {
-        Location loc1 = new Location(1L, "Aveiro", null);
-        Location loc2 = new Location(2L, "Porto", null);
-        entityManager.persist(loc1);
+        Location loc1 = new Location("Test1");
+        Location loc2 = new Location("Test2");
+        entityManager.persistAndFlush(loc1);
         entityManager.persistAndFlush(loc2);
 
-        assertEquals(Optional.of(loc1), locationRepository.findByName("Aveiro"));
+        assertEquals(Optional.of(loc1), locationRepository.findByName("Test1"));
     }
 
     @Test
     void testFindByInvalidName() {
-        Location loc1 = new Location(1L, "Aveiro", null);
-        Location loc2 = new Location(2L, "Porto", null);
-        entityManager.persist(loc1);
+        Location loc1 = new Location("Test1");
+        Location loc2 = new Location("Test2");
+        entityManager.persistAndFlush(loc1);
         entityManager.persistAndFlush(loc2);
 
         assertEquals(Optional.empty(), locationRepository.findByName("braga"));

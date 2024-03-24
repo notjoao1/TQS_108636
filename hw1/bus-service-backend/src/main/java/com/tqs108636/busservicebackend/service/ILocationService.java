@@ -12,5 +12,5 @@ public interface ILocationService {
 
     public Optional<Location> findByName(String name);
 
-    public List<Location> findConnectedLocations(Long connectedToId);
+    public List<Location> findConnectedLocations(String connectedToName);
 }
