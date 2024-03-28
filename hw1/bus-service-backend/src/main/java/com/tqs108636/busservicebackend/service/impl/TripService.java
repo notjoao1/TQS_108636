@@ -1,8 +1,9 @@
 package com.tqs108636.busservicebackend.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,21 +27,31 @@ public class TripService implements ITripService {
     }
 
     @Override
-    public List<Trip> findUpcomingTripsByRoute(Long routeId) {
-        Optional<Route> optionalRoute = routeService.findById(routeId);
-        if (optionalRoute.isEmpty())
+    public List<Trip> findUpcomingTripsByRoute(String fromLocationName, String toLocationName) {
+        List<Route> routeList = routeService.findRouteFromLocationToLocation(fromLocationName, toLocationName);
+        if (routeList.isEmpty())
             return new ArrayList<>();
 
-        return tripRepository.findUpcomingTripsByRoute(optionalRoute.get());
+        Set<Trip> upcomingTripsSet = new HashSet<>();
+        for (Route route : routeList) {
+            tripRepository.findUpcomingTripsByRoute(route).forEach(upcomingTripsSet::add);
+        }
+
+        return new ArrayList<>(upcomingTripsSet);
     }
 
     @Override
-    public List<Trip> findAllTripsByRoute(Long routeId) {
-        Optional<Route> optionalRoute = routeService.findById(routeId);
-        if (optionalRoute.isEmpty())
+    public List<Trip> findAllTripsByRoute(String fromLocationName, String toLocationName) {
+        List<Route> routeList = routeService.findRouteFromLocationToLocation(fromLocationName, toLocationName);
+        if (routeList.isEmpty())
             return new ArrayList<>();
 
-        return tripRepository.findByRoute(optionalRoute.get());
+        Set<Trip> upcomingTripsSet = new HashSet<>();
+        for (Route route : routeList) {
+            tripRepository.findByRoute(route).forEach(upcomingTripsSet::add);
+        }
+
+        return new ArrayList<>(upcomingTripsSet);
     }
 
     @Override

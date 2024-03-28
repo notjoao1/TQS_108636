@@ -8,7 +8,7 @@ import com.tqs108636.busservicebackend.model.Route;
 public interface IRouteService {
     List<Route> findAll();
 
-    List<Route> findStartingWithLocation(String firstLocation);
+    List<Route> findRouteFromLocationToLocation(String fromLocationName, String toLocationName);
 
     Optional<Route> findById(Long id);
 }

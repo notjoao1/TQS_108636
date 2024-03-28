@@ -1,6 +1,7 @@
 package com.tqs108636.busservicebackend.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -24,8 +25,8 @@ class RouteRepositoryTest {
     RouteRepository routeRepository;
 
     Location locAveiro, locPorto, locBraga, locFaro;
-    RouteStop rs1, rs2, rs3, rs4, rs5, rs6, rs7;
-    Route route1, route2, route3;
+    RouteStop rs1, rs2, rs3, rs4, rs5, rs6, rs7, rs8, rs9;
+    Route route1, route2, route3, route4;
 
     @BeforeEach
     void setup() {
@@ -34,6 +35,7 @@ class RouteRepositoryTest {
         route1 = new Route(70);
         route2 = new Route(30);
         route3 = new Route(60);
+        route4 = new Route(60);
 
         locAveiro = new Location("Aveiro");
         locPorto = new Location("Porto");
@@ -50,6 +52,9 @@ class RouteRepositoryTest {
         rs6 = new RouteStop(locAveiro, route3, 0, 0);
         rs7 = new RouteStop(locBraga, route3, 1, 60);
 
+        rs8 = new RouteStop(locPorto, route4, 0, 0);
+        rs9 = new RouteStop(locAveiro, route4, 1, 60);
+
         entityManager.persist(locAveiro);
         entityManager.persist(locPorto);
         entityManager.persist(locBraga);
@@ -58,6 +63,7 @@ class RouteRepositoryTest {
         entityManager.persist(route1);
         entityManager.persist(route2);
         entityManager.persist(route3);
+        entityManager.persist(route4);
 
         entityManager.persist(rs1);
         entityManager.persist(rs2);
@@ -66,24 +72,36 @@ class RouteRepositoryTest {
         entityManager.persist(rs5);
         entityManager.persist(rs6);
         entityManager.persist(rs7);
+        entityManager.persist(rs8);
+        entityManager.persist(rs9);
 
         entityManager.flush();
     }
 
     @Test
-    void testFindStartingWithLocationAveiro() {
-        List<Route> routesStartingAveiro = routeRepository.findRoutesByStartingLocation(locAveiro);
+    void testFindRoutes_FromAveiro_ToPorto() {
+        List<Route> routesFromAveiroToPorto = routeRepository.findRoutesFromLocationToLocation(locAveiro, locPorto);
 
-        assertEquals(2, routesStartingAveiro.size());
-        assertTrue(routesStartingAveiro.contains(route1));
-        assertTrue(routesStartingAveiro.contains(route3));
+        assertEquals(1, routesFromAveiroToPorto.size());
+        assertTrue(routesFromAveiroToPorto.contains(route1));
+        // route4 is from Porto to Aveiro, not the opposite way around
+        assertFalse(routesFromAveiroToPorto.contains(route4));
     }
 
     @Test
-    void testFindStartingWithInvalidLocation() {
-        List<Route> routesStartingFaro = routeRepository.findRoutesByStartingLocation(locFaro);
+    void testFindRoutes_FromPorto_ToBraga() {
+        List<Route> routesFromPortoToBraga = routeRepository.findRoutesFromLocationToLocation(locPorto, locBraga);
 
-        assertTrue(routesStartingFaro.isEmpty());
+        assertEquals(2, routesFromPortoToBraga.size());
+        assertTrue(routesFromPortoToBraga.contains(route2));
+        assertTrue(routesFromPortoToBraga.contains(route2));
+    }
+
+    @Test
+    void testFindRoutes_FromBraga_ToPorto() {
+        List<Route> routesFromBragaToPorto = routeRepository.findRoutesFromLocationToLocation(locBraga, locPorto);
+
+        assertTrue(routesFromBragaToPorto.isEmpty());
     }
 
     @Test

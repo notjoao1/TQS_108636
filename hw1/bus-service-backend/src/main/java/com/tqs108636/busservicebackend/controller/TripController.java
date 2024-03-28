@@ -24,18 +24,25 @@ public class TripController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Trip>> getTrips(@RequestParam(name = "route") Optional<Long> routeId,
+    public ResponseEntity<List<Trip>> getTrips(
+            @RequestParam(name = "from") Optional<String> fromLocation,
+            @RequestParam(name = "to") Optional<String> toLocation,
             @RequestParam(name = "upcoming") Optional<Boolean> upcoming) {
-        if (routeId.isEmpty()) {
-            return ResponseEntity.ok(tripService.findAll());
+        // only one is empty but not both
+        if (fromLocation.isEmpty() ^ toLocation.isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
+
+        // both empty
+        if (fromLocation.isEmpty() && toLocation.isEmpty())
+            return ResponseEntity.ok(tripService.findAll());
+
         if (upcoming.isEmpty()) {
-            List<Trip> tripsByRoute = tripService.findAllTripsByRoute(routeId.get());
-            if (tripsByRoute.isEmpty())
-                return ResponseEntity.notFound().build();
+            List<Trip> tripsByRoute = tripService.findAllTripsByRoute(fromLocation.get(), toLocation.get());
             return ResponseEntity.ok(tripsByRoute);
         }
-        List<Trip> upcomingTrips = tripService.findUpcomingTripsByRoute(routeId.get());
+
+        List<Trip> upcomingTrips = tripService.findUpcomingTripsByRoute(fromLocation.get(), toLocation.get());
         if (upcomingTrips.isEmpty())
             return ResponseEntity.notFound().build();
 

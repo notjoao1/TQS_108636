@@ -69,31 +69,37 @@ class RouteServiceMockRepoTest {
     }
 
     @Test
-    void testFindStartingWithLocationAveiro() {
+    void testFindRoutes_FromAveiro_ToPorto() {
         when(locationRepository.findByName(locAveiro.getName())).thenReturn(Optional.of(locAveiro));
-        when(routeRepository.findRoutesByStartingLocation(locAveiro)).thenReturn(Arrays.asList(route1, route3));
+        when(locationRepository.findByName(locPorto.getName())).thenReturn(Optional.of(locPorto));
+        when(routeRepository.findRoutesFromLocationToLocation(locAveiro, locPorto))
+                .thenReturn(Arrays.asList(route1));
 
-        List<Route> routesStartingAveiro = routeService.findStartingWithLocation(locAveiro.getName());
+        List<Route> routesFromAveiroToPorto = routeService.findRouteFromLocationToLocation(locAveiro.getName(),
+                locPorto.getName());
 
-        assertEquals(2, routesStartingAveiro.size());
-        assertEquals(route1, routesStartingAveiro.get(0));
-        assertEquals(route3, routesStartingAveiro.get(1));
+        assertEquals(1, routesFromAveiroToPorto.size());
+        assertTrue(routesFromAveiroToPorto.contains(route1));
 
-        verify(routeRepository, times(1)).findRoutesByStartingLocation(locAveiro);
+        verify(routeRepository, times(1)).findRoutesFromLocationToLocation(locAveiro, locPorto);
         verify(locationRepository, times(1)).findByName(locAveiro.getName());
+        verify(locationRepository, times(1)).findByName(locPorto.getName());
     }
 
     @Test
-    void testFindStartingWithLocationInvalid() {
+    void testFindRoutes_FromFaro_ToAveiro() {
         when(locationRepository.findByName(locFaro.getName())).thenReturn(Optional.of(locFaro));
-        when(routeRepository.findRoutesByStartingLocation(locFaro)).thenReturn(new ArrayList<>());
+        when(locationRepository.findByName(locAveiro.getName())).thenReturn(Optional.of(locAveiro));
+        when(routeRepository.findRoutesFromLocationToLocation(locFaro, locAveiro)).thenReturn(new ArrayList<>());
 
-        List<Route> routesStartingFaro = routeService.findStartingWithLocation(locFaro.getName());
+        List<Route> routesFromFaroToAveiro = routeService.findRouteFromLocationToLocation(locFaro.getName(),
+                locAveiro.getName());
 
-        assertTrue(routesStartingFaro.isEmpty());
+        assertTrue(routesFromFaroToAveiro.isEmpty());
 
-        verify(routeRepository, times(1)).findRoutesByStartingLocation(locFaro);
+        verify(routeRepository, times(1)).findRoutesFromLocationToLocation(locFaro, locAveiro);
         verify(locationRepository, times(1)).findByName(locFaro.getName());
+        verify(locationRepository, times(1)).findByName(locAveiro.getName());
     }
 
     @Test

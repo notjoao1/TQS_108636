@@ -31,19 +31,20 @@ public class RouteService implements IRouteService {
     }
 
     @Override
-    public List<Route> findStartingWithLocation(String startingAtLocation) {
-        Optional<Location> firstLocation = locationRepository.findByName(startingAtLocation);
-
-        if (firstLocation.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return routeRepository.findRoutesByStartingLocation(firstLocation.get());
+    public Optional<Route> findById(Long id) {
+        return routeRepository.findById(id);
     }
 
     @Override
-    public Optional<Route> findById(Long id) {
-        return routeRepository.findById(id);
+    public List<Route> findRouteFromLocationToLocation(String fromLocationName, String toLocationName) {
+        Optional<Location> fromLocation = locationRepository.findByName(fromLocationName);
+        Optional<Location> toLocation = locationRepository.findByName(toLocationName);
+
+        if (fromLocation.isEmpty() || toLocation.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return routeRepository.findRoutesFromLocationToLocation(fromLocation.get(), toLocation.get());
     }
 
 }

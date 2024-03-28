@@ -2,6 +2,8 @@ package com.tqs108636.busservicebackend.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,5 +33,6 @@ public class Location {
     private String name;
 
     @OneToMany(mappedBy = "location")
+    @JsonIgnore
     private List<RouteStop> routeStops;
 }
