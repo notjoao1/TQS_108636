@@ -43,9 +43,4 @@ public class Reservation {
         this.clientName = clientName;
     }
 
-    public Reservation(Trip trip, int seatNumber) {
-        this.trip = trip;
-        this.seatNumber = seatNumber;
-    }
-
 }

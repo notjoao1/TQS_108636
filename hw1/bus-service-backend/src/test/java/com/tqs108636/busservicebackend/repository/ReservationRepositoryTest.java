@@ -33,14 +33,14 @@ class ReservationRepositoryTest {
     void setup() {
         route1 = new Route(0);
         trip1 = new Trip(route1, null, 0, 2); // 2 seats
-        reservation1 = new Reservation(trip1, 0);
+        reservation1 = new Reservation(trip1, 0, "pessoaTest1");
 
         route2 = new Route(0);
         trip2 = new Trip(route2, null, 0, 100);
 
         trip3 = new Trip(route2, null, 0, 5);
-        reservation2 = new Reservation(trip3, 2);
-        reservation3 = new Reservation(trip3, 4);
+        reservation2 = new Reservation(trip3, 2, "pessoaTest2");
+        reservation3 = new Reservation(trip3, 4, "pessoaTest3");
 
         entityManager.persist(route1);
         entityManager.persist(trip1);
