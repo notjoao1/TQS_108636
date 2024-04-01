@@ -93,7 +93,7 @@ const ReserveTripContent: React.FC<ReserveTripContentProps> = (
       <div className="pt-4 flex flex-col">
         <div className="flex flex-col pb-4">
           <label className="pb-1 font-bold" htmlFor="name">
-            Name
+            Name*
           </label>
           <input
             className="input input-bordered w-full max-w-xs"
@@ -144,7 +144,7 @@ const ReserveTripContent: React.FC<ReserveTripContentProps> = (
           />
         </div>
         <div className="flex flex-col pb-4">
-          <div className="font-bold pb-1">Seat Number</div>
+          <div className="font-bold pb-1">Seat Number*</div>
           <select
             className="select select-bordered w-full max-w-xs"
             value={seatNumber}
@@ -155,6 +155,7 @@ const ReserveTripContent: React.FC<ReserveTripContentProps> = (
             ))}
           </select>
         </div>
+        <div className="text-red-500">* Required</div>
       </div>
       <div className="pt-4">
         <button

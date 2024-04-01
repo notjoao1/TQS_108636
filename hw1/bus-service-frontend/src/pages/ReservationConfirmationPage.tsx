@@ -8,7 +8,6 @@ const ReservationConfirmationPage = () => {
 
   const reservationData: IReservation = location.state;
 
-  console.log(reservationData);
   return (
     <div className="flex flex-col">
       <Navbar />

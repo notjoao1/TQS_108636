@@ -62,7 +62,7 @@ class ReservationServiceMockRepoTest {
                 .createReservation(new ReservationDTO(trip1.getId(), 0, "Pessoa1"));
 
         assertTrue(optionalReservation.isPresent());
-        assertEquals(optionalReservation.get().getClientName(), "Pessoa1");
+        assertEquals("Pessoa1", optionalReservation.get().getClientName());
         assertEquals(optionalReservation.get().getTrip().getId(), trip1.getId());
     }
 
