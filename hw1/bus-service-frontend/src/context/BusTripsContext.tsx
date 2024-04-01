@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { ICity, IRoute, ITrip } from "../types/BusTripsTypes";
+import { ICity, IRoute, ITrip, ITripDetails } from "../types/BusTripsTypes";
 
 interface BusTripsContextType {
   departureCities: ICity[];
@@ -17,6 +17,9 @@ interface BusTripsContextType {
 
   trips: ITrip[];
   setTrips: React.Dispatch<React.SetStateAction<ITrip[]>>;
+
+  tripDetails: ITripDetails | null;
+  setTripDetails: React.Dispatch<React.SetStateAction<ITripDetails | null>>;
 }
 
 export const BusTripsContext = createContext<BusTripsContextType | undefined>(
@@ -35,6 +38,7 @@ export const BusTripsContextProvider: React.FC<{
   );
   const [routes, setRoutes] = useState<IRoute[]>([]);
   const [trips, setTrips] = useState<ITrip[]>([]);
+  const [tripDetails, setTripDetails] = useState<ITripDetails | null>(null);
 
   return (
     <BusTripsContext.Provider
@@ -51,6 +55,8 @@ export const BusTripsContextProvider: React.FC<{
         setRoutes,
         trips,
         setTrips,
+        tripDetails,
+        setTripDetails,
       }}
     >
       {children}

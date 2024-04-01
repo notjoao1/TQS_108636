@@ -8,6 +8,7 @@ export const DepartureCitiesDropdown = () => {
     setSelectedDepartureCity,
     departureCities,
     setArrivalCities,
+    setSelectedArrivalCity,
   } = useContext(BusTripsContext) || {};
 
   // Fetch connected arrival cities when you click a departure city
@@ -41,6 +42,7 @@ export const DepartureCitiesDropdown = () => {
       (city) => city.id === selectedId
     );
     setSelectedDepartureCity?.(selectedCity ?? null);
+    setSelectedArrivalCity?.(null); // arrival city not selected
   };
 
   return (

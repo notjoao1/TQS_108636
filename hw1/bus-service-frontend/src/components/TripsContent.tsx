@@ -5,7 +5,7 @@ import { BusTripsContext } from "../context/BusTripsContext";
 import { ICity } from "../types/BusTripsTypes";
 import TripList from "./TripList";
 
-const Content = () => {
+const TripsContent = () => {
   const { setDepartureCities } = useContext(BusTripsContext) || {};
 
   useEffect(() => {
@@ -40,4 +40,4 @@ const Content = () => {
   );
 };
 
-export default Content;
+export default TripsContent;

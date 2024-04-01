@@ -23,3 +23,19 @@ export interface ITrip {
   numberOfSeats: number;
   priceEuro: number;
 }
+
+export interface ITripDetails {
+  id: number;
+  route: IRoute;
+  departureTime: Date;
+  numberOfSeats: number;
+  priceEuro: number;
+  availableSeatNumbers: number[];
+}
+
+export interface IReservation {
+  id: number;
+  trip: ITrip;
+  seatNumber: number;
+  clientName: string;
+}
