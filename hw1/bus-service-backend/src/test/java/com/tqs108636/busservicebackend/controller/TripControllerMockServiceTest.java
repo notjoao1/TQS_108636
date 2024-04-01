@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.everyItem;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
 import com.tqs108636.busservicebackend.model.Location;
 import com.tqs108636.busservicebackend.model.Route;
 import com.tqs108636.busservicebackend.model.RouteStop;
@@ -45,6 +48,7 @@ class TripControllerMockServiceTest {
         RouteStop rs1, rs2, rs3, rs4, rs5, rs6, rs7;
         Route route1, route2, route3;
         Trip trip1, trip2, trip3, trip4, trip5, trip6, trip7, trip8;
+        TripDetailsDTO tripDetailsDTO1;
 
         @BeforeEach
         void setup() {
@@ -99,6 +103,11 @@ class TripControllerMockServiceTest {
                                 15);
                 trip8 = new Trip(8L, route3,
                                 LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS - 500L, 0, ZoneOffset.UTC), 20.0f, 20);
+
+                tripDetailsDTO1 = new TripDetailsDTO(1L, route1,
+                                LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 10L, 0, ZoneOffset.UTC),
+                                15.0f,
+                                20, Arrays.asList(0, 1, 2, 3, 4));
         }
 
         @Test
@@ -161,4 +170,26 @@ class TripControllerMockServiceTest {
                 verify(tripService, times(0)).findAllTripsByRoute(anyString(), anyString());
         }
 
+        @Test
+        void testGetTripDetails_ValidTrip() throws Exception {
+                when(tripService.getTripDetails(anyLong())).thenReturn(Optional.of(tripDetailsDTO1));
+
+                mockMvc.perform(get("/api/trips/1")).andExpectAll(
+                                status().isOk(),
+                                jsonPath("$.id").value(trip1.getId()),
+                                jsonPath("$.availableSeatNumbers", hasSize(5)));
+
+                verify(tripService, times(1)).getTripDetails(anyLong());
+        }
+
+        @Test
+        void testGetTripDetails_InvalidTrip() throws Exception {
+                when(tripService.getTripDetails(anyLong())).thenReturn(Optional.empty());
+
+                mockMvc.perform(get("/api/trips/10000")).andExpectAll(
+                                status().isNotFound(),
+                                jsonPath("$").doesNotExist());
+
+                verify(tripService, times(1)).getTripDetails(anyLong());
+        }
 }

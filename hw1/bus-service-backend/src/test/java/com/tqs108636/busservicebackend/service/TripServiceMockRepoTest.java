@@ -1,8 +1,10 @@
 package com.tqs108636.busservicebackend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +24,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
 import com.tqs108636.busservicebackend.model.Location;
 import com.tqs108636.busservicebackend.model.Route;
 import com.tqs108636.busservicebackend.model.RouteStop;
 import com.tqs108636.busservicebackend.model.Trip;
+import com.tqs108636.busservicebackend.repository.ReservationRepository;
 import com.tqs108636.busservicebackend.repository.TripRepository;
 import com.tqs108636.busservicebackend.service.impl.RouteService;
 import com.tqs108636.busservicebackend.service.impl.TripService;
@@ -36,6 +41,9 @@ class TripServiceMockRepoTest {
 
         @Mock
         RouteService routeService;
+
+        @Mock
+        ReservationRepository reservationRepository;
 
         @InjectMocks
         TripService tripService;
@@ -168,5 +176,59 @@ class TripServiceMockRepoTest {
                 verify(routeService, times(1)).findRouteFromLocationToLocation(locFaro.getName(), locPorto.getName());
                 verify(tripRepository, times(0)).findUpcomingTripsByRoute(any());
 
+        }
+
+        @Test
+        void testGetTripDetails_WithTakenSeats() {
+                when(tripRepository.findById(anyLong())).thenReturn(Optional.of(trip1));
+                when(reservationRepository.findTakenSeatNumbersByTrip(trip1)).thenReturn(Arrays.asList(6, 12));
+
+                // trip1 has 20 seats and 2 are taken - 18 available
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip1.getId());
+
+                assertTrue(optTripDetails.isPresent());
+
+                TripDetailsDTO tripDetailsDTO = optTripDetails.get();
+
+                assertEquals(tripDetailsDTO.getId(), trip1.getId());
+                assertEquals(tripDetailsDTO.getRoute(), trip1.getRoute());
+
+                assertFalse(tripDetailsDTO.getAvailableSeatNumbers().contains(6));
+                assertFalse(tripDetailsDTO.getAvailableSeatNumbers().contains(12));
+
+                assertEquals(18, tripDetailsDTO.getAvailableSeatNumbers().size());
+
+                verify(reservationRepository, times(1)).findTakenSeatNumbersByTrip(any());
+        }
+
+        @Test
+        void testGetTripDetails_WithNoTakenSeats() {
+                when(tripRepository.findById(anyLong())).thenReturn(Optional.of(trip2));
+                when(reservationRepository.findTakenSeatNumbersByTrip(trip2)).thenReturn(new ArrayList<>());
+
+                // trip2 has 20 seats and 2 are taken - 18 available
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip2.getId());
+
+                assertTrue(optTripDetails.isPresent());
+
+                TripDetailsDTO tripDetailsDTO = optTripDetails.get();
+
+                assertEquals(tripDetailsDTO.getId(), trip2.getId());
+                assertEquals(tripDetailsDTO.getRoute(), trip2.getRoute());
+
+                assertEquals(20, tripDetailsDTO.getAvailableSeatNumbers().size());
+
+                verify(reservationRepository, times(1)).findTakenSeatNumbersByTrip(any());
+        }
+
+        @Test
+        void testGetTripDetails_InvalidTripId() {
+                when(tripRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(100L);
+
+                assertTrue(optTripDetails.isEmpty());
+
+                verify(reservationRepository, times(0)).findTakenSeatNumbersByTrip(any());
         }
 }

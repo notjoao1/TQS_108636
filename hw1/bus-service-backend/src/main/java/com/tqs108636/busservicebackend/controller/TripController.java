@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
 import com.tqs108636.busservicebackend.model.Trip;
 import com.tqs108636.busservicebackend.service.ITripService;
 
@@ -21,6 +23,16 @@ public class TripController {
     @Autowired
     public TripController(ITripService tripService) {
         this.tripService = tripService;
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<TripDetailsDTO> getTripDetails(@PathVariable("id") Long tripId) {
+        Optional<TripDetailsDTO> optionalTripDetails = tripService.getTripDetails(tripId);
+
+        if (optionalTripDetails.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(optionalTripDetails.get());
     }
 
     @GetMapping

@@ -37,6 +37,7 @@ public class Trip {
 
     private float priceEuro;
 
+    // If there are 4 seats, valid seat numbers are -> 0, 1, 2, 3
     private int numberOfSeats;
 
     public Trip(Route route, LocalDateTime departureTime, float priceEuro, int numberOfSeats) {
