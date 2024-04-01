@@ -43,15 +43,21 @@ class TripRepositoryTest {
 
         // 6 trips for route1 - all except trip3 (5 of them are upcoming)
         // date order is: trip2 < trip1 < trip5 < trip6 < trip7 < trip4
-        trip1 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 10L, 0, ZoneOffset.UTC), 15.0f, 20);
-        trip2 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS - 500L, 0, ZoneOffset.UTC), 12.0f,
+        trip1 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 10000L, 0, ZoneOffset.UTC), 15.0f,
                 20);
-        trip3 = new Trip(route2, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 10L, 0, ZoneOffset.UTC), 8.0f, 20);
-        trip4 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 10000L, 0, ZoneOffset.UTC), 12.0f,
+        trip2 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS - 500000L, 0, ZoneOffset.UTC), 12.0f,
+                20);
+        trip3 = new Trip(route2, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 1000L, 0, ZoneOffset.UTC), 8.0f,
+                20);
+        trip4 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 10000000L, 0, ZoneOffset.UTC),
+                12.0f,
                 15);
-        trip5 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 20L, 0, ZoneOffset.UTC), 12.0f, 15);
-        trip6 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 30L, 0, ZoneOffset.UTC), 12.0f, 15);
-        trip7 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 40L, 0, ZoneOffset.UTC), 12.0f, 15);
+        trip5 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 20000L, 0, ZoneOffset.UTC), 12.0f,
+                15);
+        trip6 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 30000L, 0, ZoneOffset.UTC), 12.0f,
+                15);
+        trip7 = new Trip(route1, LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS + 40000L, 0, ZoneOffset.UTC), 12.0f,
+                15);
 
         entityManager.persist(route1);
         entityManager.persist(route2);

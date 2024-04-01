@@ -43,8 +43,6 @@ public class TripController {
         }
 
         List<Trip> upcomingTrips = tripService.findUpcomingTripsByRoute(fromLocation.get(), toLocation.get());
-        if (upcomingTrips.isEmpty())
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(upcomingTrips);
     }
