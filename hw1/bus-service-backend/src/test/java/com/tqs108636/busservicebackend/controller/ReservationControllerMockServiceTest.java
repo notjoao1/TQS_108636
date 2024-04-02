@@ -50,7 +50,7 @@ class ReservationControllerMockServiceTest {
         when(reservationService.createReservation(any())).thenReturn(Optional.of(reservation1));
         mockMvc.perform(post("/api/reservations").contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.toJson(new ReservationDTO(trip1.getId(), 1, "Pessoa1")))).andExpectAll(
-                        status().isOk(),
+                        status().isCreated(),
                         jsonPath("$.id").value(reservation1.getId().toString()),
                         jsonPath("$.trip.id").value(trip1.getId()),
                         jsonPath("$.clientName").value("Pessoa1"));

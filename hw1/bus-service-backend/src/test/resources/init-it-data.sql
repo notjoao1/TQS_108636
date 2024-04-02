@@ -41,13 +41,13 @@ INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
 INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
     VALUES (2, DATEADD('SECOND', 1713279423, DATE '1970-01-01'), 8, 15);
 INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1712693823, DATE '1970-01-01'), 6, 10);
+    VALUES (1, DATEADD('SECOND', 1713693823, DATE '1970-01-01'), 6, 10);
 INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1711967823, DATE '1970-01-01'), 10, 20);
+    VALUES (1, DATEADD('SECOND', 1719967823, DATE '1970-01-01'), 10, 20);
 INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
     VALUES (1, DATEADD('SECOND', 1710535823, DATE '1970-01-01'), 15, 15);
 INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1712093823, DATE '1970-01-01'), 20, 30);
+    VALUES (1, DATEADD('SECOND', 1718093823, DATE '1970-01-01'), 20, 30);
 INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
     VALUES (3, DATEADD('SECOND', 1714967823, DATE '1970-01-01'), 10, 20);
 

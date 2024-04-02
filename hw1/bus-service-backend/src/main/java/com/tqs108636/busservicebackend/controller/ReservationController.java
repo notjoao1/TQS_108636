@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +42,6 @@ public class ReservationController {
         if (optionalReservation.isEmpty())
             return ResponseEntity.badRequest().build();
 
-        // TODO: mudar para status code 201 CREATED em vez de 200
-        return ResponseEntity.ok(optionalReservation.get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(optionalReservation.get());
     }
 }

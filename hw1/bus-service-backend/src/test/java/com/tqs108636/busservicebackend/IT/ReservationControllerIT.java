@@ -3,7 +3,6 @@ package com.tqs108636.busservicebackend.IT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
@@ -77,7 +76,7 @@ class ReservationControllerIT {
                 new HttpEntity<>(reservationDTO),
                 Reservation.class);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode()); // Or the expected status code
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Reservation reservationResponse = response.getBody();
         assertNotNull(reservationResponse);
         assertEquals("Pessoa_Fixe", reservationResponse.getClientName());
