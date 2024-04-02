@@ -48,10 +48,10 @@ class LocationServiceMockRepoTest {
         route1 = new Route(1L, 70, null);
         route2 = new Route(2L, 30, null);
 
-        locAveiro = new Location(1L, "Aveiro", null);
-        locPorto = new Location(100L, "Porto", null);
-        locBraga = new Location(10000L, "Braga", null);
-        locFaro = new Location(100000L, "Faro", null);
+        locAveiro = new Location(1L, "Aveiro");
+        locPorto = new Location(100L, "Porto");
+        locBraga = new Location(10000L, "Braga");
+        locFaro = new Location(100000L, "Faro");
 
         rs1 = new RouteStop(1L, locAveiro, route1, 0, 0);
         rs2 = new RouteStop(2L, locPorto, route1, 1, 40);

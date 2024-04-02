@@ -33,10 +33,10 @@ class LocationControllerMockServiceTest {
 
     @BeforeEach
     public void setup() {
-        loc1 = new Location(1L, "Aveiro", null);
-        loc2 = new Location(100L, "Porto", null);
-        loc3 = new Location(10000L, "Braga", null);
-        loc4 = new Location(100000L, "Faro", null);
+        loc1 = new Location(1L, "Aveiro");
+        loc2 = new Location(100L, "Porto");
+        loc3 = new Location(10000L, "Braga");
+        loc4 = new Location(100000L, "Faro");
     }
 
     @Test
