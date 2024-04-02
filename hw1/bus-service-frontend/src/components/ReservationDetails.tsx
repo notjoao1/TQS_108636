@@ -8,7 +8,6 @@ const ReservationDetails: React.FC<ReservationDetailsProps> = (
   props: ReservationDetailsProps
 ) => {
   const reservation = props.reservation;
-  console.log(props.reservation);
   return (
     <div>
       <p className="text-xl pt-4 pb-2">

@@ -20,6 +20,9 @@ interface BusTripsContextType {
 
   tripDetails: ITripDetails | null;
   setTripDetails: React.Dispatch<React.SetStateAction<ITripDetails | null>>;
+
+  currency: string;
+  setCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const BusTripsContext = createContext<BusTripsContextType | undefined>(
@@ -39,6 +42,7 @@ export const BusTripsContextProvider: React.FC<{
   const [routes, setRoutes] = useState<IRoute[]>([]);
   const [trips, setTrips] = useState<ITrip[]>([]);
   const [tripDetails, setTripDetails] = useState<ITripDetails | null>(null);
+  const [currency, setCurrency] = useState<string>("EUR");
 
   return (
     <BusTripsContext.Provider
@@ -57,6 +61,8 @@ export const BusTripsContextProvider: React.FC<{
         setTrips,
         tripDetails,
         setTripDetails,
+        currency,
+        setCurrency,
       }}
     >
       {children}
