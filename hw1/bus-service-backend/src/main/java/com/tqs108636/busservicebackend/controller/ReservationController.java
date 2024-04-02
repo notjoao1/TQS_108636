@@ -41,6 +41,7 @@ public class ReservationController {
         if (optionalReservation.isEmpty())
             return ResponseEntity.badRequest().build();
 
+        // TODO: mudar para status code 201 CREATED em vez de 200
         return ResponseEntity.ok(optionalReservation.get());
     }
 }

@@ -2,7 +2,6 @@ package com.tqs108636.busservicebackend.model;
 
 import java.util.UUID;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,7 +30,6 @@ public class Reservation {
     @NonNull
     private Trip trip;
 
-    @Column(unique = true)
     private int seatNumber;
 
     @NotNull
