@@ -22,7 +22,7 @@ import com.tqs108636.busservicebackend.model.Location;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application_it.properties")
-class LocationControllerIT {
+class LocatioonControllerIT {
     @LocalServerPort
     int serverPort;
 
