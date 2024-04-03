@@ -1,11 +1,14 @@
 package com.tqs108636.busservicebackend.service.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ import com.tqs108636.busservicebackend.service.ILocationService;
 public class LocationService implements ILocationService {
     private LocationRepository locationRepository;
 
+    private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
+
     private RouteRepository routeRepository;
 
     @Autowired
@@ -30,24 +35,30 @@ public class LocationService implements ILocationService {
 
     @Override
     public Optional<Location> findLocationById(Long id) {
+        logger.debug("Finding location by id - {}", id);
         return locationRepository.findById(id);
     }
 
     @Override
     public List<Location> findAll() {
+        logger.debug("Finding all locations");
         return locationRepository.findAll();
     }
 
     @Override
     public Optional<Location> findByName(String name) {
+        logger.debug("Finding location by name - {}", name);
         return locationRepository.findByName(name);
     }
 
     @Override
     public List<Location> findConnectedLocations(String connectedToName) {
+        logger.debug("Finding connected locations to - {}", connectedToName);
+
         Optional<Location> optLocation = this.findByName(connectedToName);
 
         if (optLocation.isEmpty()) {
+            logger.debug("Location with name {} was not found.", connectedToName);
             return new ArrayList<>();
         }
 

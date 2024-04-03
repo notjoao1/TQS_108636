@@ -1,5 +1,6 @@
 package com.tqs108636.busservicebackend.service.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,8 @@ public class TripService implements ITripService {
 
     private IRouteService routeService;
 
+    private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
+
     @Autowired
     public TripService(TripRepository tripRepository, IRouteService routeService,
             ReservationRepository reservationRepository) {
@@ -37,6 +42,9 @@ public class TripService implements ITripService {
 
     @Override
     public List<Trip> findUpcomingTripsByRoute(String fromLocationName, String toLocationName) {
+        logger.debug("findUpcomingTripsByRoute, from location = {}, to location = {}", fromLocationName,
+                toLocationName);
+
         List<Route> routeList = routeService.findRouteFromLocationToLocation(fromLocationName, toLocationName);
         if (routeList.isEmpty())
             return new ArrayList<>();
@@ -51,6 +59,8 @@ public class TripService implements ITripService {
 
     @Override
     public List<Trip> findAllTripsByRoute(String fromLocationName, String toLocationName) {
+        logger.debug("findAllTripsByRoute, from location = {}, to location = {}", fromLocationName, toLocationName);
+
         List<Route> routeList = routeService.findRouteFromLocationToLocation(fromLocationName, toLocationName);
         if (routeList.isEmpty())
             return new ArrayList<>();
@@ -65,14 +75,20 @@ public class TripService implements ITripService {
 
     @Override
     public List<Trip> findAll() {
+        logger.debug("findAll Trips");
+
         return tripRepository.findAll();
     }
 
     @Override
     public Optional<TripDetailsDTO> getTripDetails(Long tripId) {
+        logger.debug("getTripDetails, for trip ID = {}", tripId);
+
         Optional<Trip> optionalTrip = tripRepository.findById(tripId);
-        if (optionalTrip.isEmpty())
+        if (optionalTrip.isEmpty()) {
+            logger.debug("Trip with ID = {} was not found.", tripId);
             return Optional.empty();
+        }
 
         Trip trip = optionalTrip.get();
 
@@ -85,6 +101,8 @@ public class TripService implements ITripService {
 
         TripDetailsDTO tripDetailsDTO = new TripDetailsDTO(trip.getId(), trip.getRoute(), trip.getDepartureTime(),
                 trip.getPriceEuro(), trip.getNumberOfSeats(), availableSeatNumbers);
+
+        logger.debug("Available seat numbers for trip ID = {} -> {}", tripId, availableSeatNumbers);
 
         return Optional.of(tripDetailsDTO);
     }

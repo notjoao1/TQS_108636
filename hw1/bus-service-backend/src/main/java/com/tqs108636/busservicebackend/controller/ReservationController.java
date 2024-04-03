@@ -1,8 +1,11 @@
 package com.tqs108636.busservicebackend.controller;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +23,9 @@ import com.tqs108636.busservicebackend.service.IReservationService;
 @RestController
 @RequestMapping("api/reservations")
 public class ReservationController {
-    IReservationService reservationService;
+    private IReservationService reservationService;
+
+    private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
 
     @Autowired
     public ReservationController(IReservationService reservationService) {
@@ -29,6 +34,7 @@ public class ReservationController {
 
     @GetMapping("{uuid}")
     public ResponseEntity<Reservation> getReservationDetails(@PathVariable("uuid") UUID uuid) {
+        logger.info("GET /api/reservations/{}'", uuid);
         Optional<Reservation> optionalReservation = reservationService.findReservationByUUID(uuid);
         if (optionalReservation.isEmpty())
             return ResponseEntity.notFound().build();
@@ -38,6 +44,8 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        logger.info("POST /api/reservations. Body: {}'", reservationDTO);
+
         Optional<Reservation> optionalReservation = reservationService.createReservation(reservationDTO);
         if (optionalReservation.isEmpty())
             return ResponseEntity.badRequest().build();

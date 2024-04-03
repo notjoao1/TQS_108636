@@ -1,8 +1,11 @@
 package com.tqs108636.busservicebackend.controller;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,8 @@ import com.tqs108636.busservicebackend.service.ITripService;
 public class TripController {
     private ITripService tripService;
 
+    private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
+
     @Autowired
     public TripController(ITripService tripService) {
         this.tripService = tripService;
@@ -27,6 +32,7 @@ public class TripController {
 
     @GetMapping("{id}")
     public ResponseEntity<TripDetailsDTO> getTripDetails(@PathVariable("id") Long tripId) {
+        logger.info("GET /api/trips/{}'", tripId);
         Optional<TripDetailsDTO> optionalTripDetails = tripService.getTripDetails(tripId);
 
         if (optionalTripDetails.isEmpty())
@@ -40,6 +46,9 @@ public class TripController {
             @RequestParam(name = "from") Optional<String> fromLocation,
             @RequestParam(name = "to") Optional<String> toLocation,
             @RequestParam(name = "upcoming") Optional<Boolean> upcoming) {
+        logger.info("GET /api/trips. present params: from = {}; to = {}; upcoming = {}'", fromLocation.isPresent(),
+                toLocation.isPresent(), upcoming.isPresent());
+
         // only one is empty but not both
         if (fromLocation.isEmpty() ^ toLocation.isEmpty()) {
             return ResponseEntity.badRequest().build();

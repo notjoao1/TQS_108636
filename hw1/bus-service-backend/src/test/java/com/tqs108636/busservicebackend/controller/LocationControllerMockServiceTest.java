@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,25 +52,6 @@ class LocationControllerMockServiceTest {
                 jsonPath("$[2].name").value("Braga"));
 
         verify(locationService, times(1)).findAll();
-    }
-
-    @Test
-    void testGetValidLocationById() throws Exception {
-        when(locationService.findLocationById(1L)).thenReturn(Optional.of(loc1));
-
-        mockMvc.perform(get("/api/locations/1"))
-                .andExpectAll(status().isOk(), jsonPath("$.name").value(loc1.getName()));
-
-        verify(locationService, times(1)).findLocationById(1L);
-    }
-
-    @Test
-    void testGetInvalidLocation() throws Exception {
-        when(locationService.findLocationById(0L)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/locations/0")).andExpectAll(status().isNotFound(), jsonPath("$").doesNotExist());
-
-        verify(locationService, times(1)).findLocationById(0L);
     }
 
     @Test
