@@ -14,11 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tqs108636.busservicebackend.dto.TripDTO;
 import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
 import com.tqs108636.busservicebackend.model.Route;
 import com.tqs108636.busservicebackend.model.Trip;
 import com.tqs108636.busservicebackend.repository.ReservationRepository;
 import com.tqs108636.busservicebackend.repository.TripRepository;
+import com.tqs108636.busservicebackend.service.ICurrencyService;
 import com.tqs108636.busservicebackend.service.IRouteService;
 import com.tqs108636.busservicebackend.service.ITripService;
 
@@ -30,18 +32,22 @@ public class TripService implements ITripService {
 
     private IRouteService routeService;
 
+    private ICurrencyService currencyService;
+
     private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
 
     @Autowired
     public TripService(TripRepository tripRepository, IRouteService routeService,
-            ReservationRepository reservationRepository) {
+            ReservationRepository reservationRepository, ICurrencyService currencyService) {
         this.tripRepository = tripRepository;
         this.routeService = routeService;
         this.reservationRepository = reservationRepository;
+        this.currencyService = currencyService;
     }
 
     @Override
-    public List<Trip> findUpcomingTripsByRoute(String fromLocationName, String toLocationName) {
+    public List<TripDTO> findUpcomingTripsByRoute(String fromLocationName, String toLocationName,
+            String targetCurrency) {
         logger.debug("findUpcomingTripsByRoute, from location = {}, to location = {}", fromLocationName,
                 toLocationName);
 
@@ -49,35 +55,53 @@ public class TripService implements ITripService {
         if (routeList.isEmpty())
             return new ArrayList<>();
 
-        Set<Trip> upcomingTripsSet = new HashSet<>();
+        Set<TripDTO> upcomingTripsSet = new HashSet<>();
         for (Route route : routeList) {
-            tripRepository.findUpcomingTripsByRoute(route).forEach(upcomingTripsSet::add);
+            tripRepository.findUpcomingTripsByRoute(route).stream().map(t -> TripDTO.builder().id(t.getId())
+                    .route(t.getRoute()).departureTime(t.getDepartureTime())
+                    .price(currencyService.convertFromCurrencyToCurrency(t.getPriceEuro(), "EUR", targetCurrency)
+                            .get())
+                    .numberOfSeats(t.getNumberOfSeats())
+                    .build()).forEach(upcomingTripsSet::add);
         }
 
         return new ArrayList<>(upcomingTripsSet);
     }
 
     @Override
-    public List<Trip> findAllTripsByRoute(String fromLocationName, String toLocationName) {
+    public List<TripDTO> findAllTripsByRoute(String fromLocationName, String toLocationName, String targetCurrency) {
         logger.debug("findAllTripsByRoute, from location = {}, to location = {}", fromLocationName, toLocationName);
 
         List<Route> routeList = routeService.findRouteFromLocationToLocation(fromLocationName, toLocationName);
         if (routeList.isEmpty())
             return new ArrayList<>();
 
-        Set<Trip> upcomingTripsSet = new HashSet<>();
+        Set<TripDTO> upcomingTripsSet = new HashSet<>();
         for (Route route : routeList) {
-            tripRepository.findByRoute(route).forEach(upcomingTripsSet::add);
+            tripRepository.findByRoute(route).stream().map(t -> TripDTO.builder().id(t.getId())
+                    .route(t.getRoute()).departureTime(t.getDepartureTime())
+                    .price(currencyService.convertFromCurrencyToCurrency(t.getPriceEuro(), "EUR", targetCurrency)
+                            .get())
+                    .numberOfSeats(t.getNumberOfSeats())
+                    .build()).forEach(upcomingTripsSet::add);
         }
 
         return new ArrayList<>(upcomingTripsSet);
     }
 
     @Override
-    public List<Trip> findAll() {
+    public List<TripDTO> findAll(String targetCurrency) {
         logger.debug("findAll Trips");
 
-        return tripRepository.findAll();
+        List<TripDTO> allTrips = tripRepository.findAll().stream().map(
+                t -> TripDTO.builder().id(t.getId()).route(t.getRoute()).departureTime(t.getDepartureTime())
+                        .price(currencyService.convertFromCurrencyToCurrency(t.getPriceEuro(), "EUR", targetCurrency)
+                                .get())
+                        .numberOfSeats(t.getNumberOfSeats())
+                        .build())
+                .toList();
+
+        return allTrips;
     }
 
     @Override

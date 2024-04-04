@@ -3,15 +3,15 @@ package com.tqs108636.busservicebackend.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.tqs108636.busservicebackend.dto.TripDTO;
 import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
-import com.tqs108636.busservicebackend.model.Trip;
 
 public interface ITripService {
-    List<Trip> findUpcomingTripsByRoute(String fromLocationName, String toLocationName);
+    List<TripDTO> findUpcomingTripsByRoute(String fromLocationName, String toLocationName, String targetCurrency);
 
-    List<Trip> findAllTripsByRoute(String fromLocationName, String toLocationName);
+    List<TripDTO> findAllTripsByRoute(String fromLocationName, String toLocationName, String targetCurrency);
 
-    List<Trip> findAll();
+    List<TripDTO> findAll(String targetCurrency);
 
     Optional<TripDetailsDTO> getTripDetails(Long tripId);
 }

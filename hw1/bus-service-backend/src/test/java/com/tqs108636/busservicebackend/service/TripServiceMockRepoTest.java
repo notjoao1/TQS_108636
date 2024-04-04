@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +26,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.tqs108636.busservicebackend.dto.TripDTO;
 import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
 import com.tqs108636.busservicebackend.model.Location;
 import com.tqs108636.busservicebackend.model.Route;
@@ -31,6 +34,7 @@ import com.tqs108636.busservicebackend.model.RouteStop;
 import com.tqs108636.busservicebackend.model.Trip;
 import com.tqs108636.busservicebackend.repository.ReservationRepository;
 import com.tqs108636.busservicebackend.repository.TripRepository;
+import com.tqs108636.busservicebackend.service.impl.CurrencyService;
 import com.tqs108636.busservicebackend.service.impl.RouteService;
 import com.tqs108636.busservicebackend.service.impl.TripService;
 
@@ -41,6 +45,9 @@ class TripServiceMockRepoTest {
 
         @Mock
         RouteService routeService;
+
+        @Mock
+        CurrencyService currencyService;
 
         @Mock
         ReservationRepository reservationRepository;
@@ -118,8 +125,10 @@ class TripServiceMockRepoTest {
                                 .thenReturn(Arrays.asList(trip1, trip2, trip4, trip5, trip6, trip7));
                 when(tripRepository.findByRoute(route3))
                                 .thenReturn(Arrays.asList(trip8));
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(1f));
 
-                List<Trip> trips = tripService.findAllTripsByRoute(locAveiro.getName(), locBraga.getName());
+                List<TripDTO> trips = tripService.findAllTripsByRoute(locAveiro.getName(), locBraga.getName(), "EUR");
 
                 assertEquals(7, trips.size());
                 assertTrue(trips.stream().allMatch((t) -> t.getRoute().getId() == route1.getId()
@@ -135,8 +144,8 @@ class TripServiceMockRepoTest {
                 when(routeService.findRouteFromLocationToLocation(locFaro.getName(), locPorto.getName()))
                                 .thenReturn(new ArrayList<>());
 
-                List<Trip> tripsForInvalidRoute = tripService.findAllTripsByRoute(locFaro.getName(),
-                                locPorto.getName());
+                List<TripDTO> tripsForInvalidRoute = tripService.findAllTripsByRoute(locFaro.getName(),
+                                locPorto.getName(), "EUR");
 
                 assertTrue(tripsForInvalidRoute.isEmpty());
 
@@ -152,9 +161,11 @@ class TripServiceMockRepoTest {
                                 .thenReturn(Arrays.asList(trip1, trip4, trip5, trip6, trip7));
                 when(tripRepository.findUpcomingTripsByRoute(route3))
                                 .thenReturn(new ArrayList<>());
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(1f));
 
-                List<Trip> upcomingTrips = tripService.findUpcomingTripsByRoute(locAveiro.getName(),
-                                locBraga.getName());
+                List<TripDTO> upcomingTrips = tripService.findUpcomingTripsByRoute(locAveiro.getName(),
+                                locBraga.getName(), "EUR");
 
                 assertEquals(5, upcomingTrips.size());
                 assertTrue(upcomingTrips.stream().allMatch(t -> t.getDepartureTime().compareTo(LocalDateTime
@@ -169,7 +180,8 @@ class TripServiceMockRepoTest {
                 when(routeService.findRouteFromLocationToLocation(locFaro.getName(), locPorto.getName()))
                                 .thenReturn(new ArrayList<>());
 
-                List<Trip> upcomingTrips = tripService.findUpcomingTripsByRoute(locFaro.getName(), locPorto.getName());
+                List<TripDTO> upcomingTrips = tripService.findUpcomingTripsByRoute(locFaro.getName(),
+                                locPorto.getName(), "EUR");
 
                 assertTrue(upcomingTrips.isEmpty());
 

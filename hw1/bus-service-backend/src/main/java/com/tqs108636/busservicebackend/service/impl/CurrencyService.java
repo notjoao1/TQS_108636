@@ -26,6 +26,8 @@ public class CurrencyService implements ICurrencyService {
 
     @Override
     public Optional<Float> convertFromCurrencyToCurrency(float value, String fromCurrency, String targetCurrency) {
+        if (fromCurrency.equals(targetCurrency))
+            return Optional.of(value);
         Optional<CurrencyResponse> currencyResponse = currencyAPIWrapper.getLatestRatesFromTo(fromCurrency,
                 targetCurrency);
 

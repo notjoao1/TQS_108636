@@ -2,6 +2,7 @@ package com.tqs108636.busservicebackend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,5 +60,15 @@ class CurrencyServiceMockAPITest {
 
         // verify you tried
         verify(currencyAPIWrapper, times(1)).getLatestRatesFromTo("EUR", "USD");
+    }
+
+    @Test
+    void testConvertFromEur_To_Eur() {
+        Optional<Float> convertedValue = currencyService.convertFromCurrencyToCurrency(10.0f, "EUR", "EUR");
+
+        assertTrue(convertedValue.isPresent());
+        assertEquals(10.0f, convertedValue.get());
+
+        verify(currencyAPIWrapper, times(0)).getLatestRatesFromTo(anyString(), anyString());
     }
 }
