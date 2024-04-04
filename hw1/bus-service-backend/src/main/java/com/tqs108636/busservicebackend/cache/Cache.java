@@ -9,9 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.tqs108636.busservicebackend.api.CurrencyResponse;
 
+@Component("cache")
 public class Cache {
     private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
 

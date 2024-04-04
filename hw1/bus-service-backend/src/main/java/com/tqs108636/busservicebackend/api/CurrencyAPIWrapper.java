@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.tqs108636.busservicebackend.cache.Cache;
+
 @Service
 public class CurrencyAPIWrapper implements ICurrencyAPIWrapper {
 
@@ -18,17 +20,29 @@ public class CurrencyAPIWrapper implements ICurrencyAPIWrapper {
 
     private static final String BASE_URL = "https://api.frankfurter.app";
 
+    private Cache cache;
+
     @Autowired
-    public CurrencyAPIWrapper(RestTemplate restTemplate) {
+    public CurrencyAPIWrapper(RestTemplate restTemplate, Cache cache) {
         this.restTemplate = restTemplate;
+        this.cache = cache;
     }
 
     @Override
     public Optional<CurrencyResponse> getLatestRatesFromTo(String fromCurrency, String toCurrency) {
         String url = String.format(BASE_URL + "/latest?from=%s&to=%s", fromCurrency, toCurrency);
         try {
-            logger.error("Calling GET {}", url);
+            // check cache
+            String cacheKey = "LATEST:" + fromCurrency + "-" + toCurrency; // ex: LATEST:EUR-USD
+            System.out.println("CACHEKEY: " + cacheKey);
+            if (cache.contains(cacheKey)) {
+                logger.info("Cache hit for currencies: {} - {}", fromCurrency, toCurrency);
+                return Optional.of(cache.get(cacheKey));
+            }
+            logger.info("Cache miss for currencies: {} - {}", fromCurrency, toCurrency);
+            logger.info("Calling GET {}", url);
             CurrencyResponse res = restTemplate.getForObject(url, CurrencyResponse.class);
+            cache.put(cacheKey, res, 60 * 60); // cache for 1h
             return Optional.of(res);
         } catch (Exception e) {
             logger.error("GET {} failed", url);

@@ -20,13 +20,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.tqs108636.busservicebackend.cache.Cache;
+
 @ExtendWith(MockitoExtension.class)
 class CurrencyAPIWrapperTest {
     @Mock
-    private RestTemplate restTemplate;
+    RestTemplate restTemplate;
+
+    @Mock
+    Cache cache;
 
     @InjectMocks
-    private CurrencyAPIWrapper currencyAPIWrapper;
+    CurrencyAPIWrapper currencyAPIWrapper;
 
     @Test
     void testGetLatestRates_Success() {
@@ -45,6 +50,40 @@ class CurrencyAPIWrapperTest {
         assertTrue(result.isPresent());
         assertEquals(1.23f, result.get().getRates().get("USD"));
 
+        verify(restTemplate, times(1)).getForObject(anyString(), eq(CurrencyResponse.class));
+    }
+
+    @Test
+    void testGetLatestRates_Success_FromCache() {
+        CurrencyResponse mockResponse = new CurrencyResponse();
+        mockResponse.setRates(new HashMap<>() {
+            {
+                put("USD", 1.23f);
+            }
+        });
+
+        // setup mocks
+        when(cache.get(anyString())).thenReturn(mockResponse);
+        when(restTemplate.getForObject(anyString(), eq(CurrencyResponse.class)))
+                .thenReturn(mockResponse);
+
+        // this call makes the response cached, but the response doesn't use the cache
+        // to get the result yet
+        Optional<CurrencyResponse> result = currencyAPIWrapper.getLatestRatesFromTo("EUR", "USD");
+
+        verify(cache, times(0)).get(anyString()); // cache not yet accessed
+
+        assertTrue(result.isPresent());
+        assertEquals(1.23f, result.get().getRates().get("USD"));
+
+        when(cache.contains(anyString())).thenReturn(true);
+
+        Optional<CurrencyResponse> resultCache = currencyAPIWrapper.getLatestRatesFromTo("EUR", "USD");
+
+        assertTrue(resultCache.isPresent());
+        assertEquals(1.23f, resultCache.get().getRates().get("USD"));
+
+        verify(cache, times(1)).get(anyString());
         verify(restTemplate, times(1)).getForObject(anyString(), eq(CurrencyResponse.class));
     }
 
