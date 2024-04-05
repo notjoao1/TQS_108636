@@ -30,16 +30,15 @@ public class CurrencyAPIWrapper implements ICurrencyAPIWrapper {
 
     @Override
     public Optional<CurrencyResponse> getLatestRatesFromTo(String fromCurrency, String toCurrency) {
+        logger.info("Getting latest rates from {} to {}", fromCurrency, toCurrency);
         String url = String.format(BASE_URL + "/latest?from=%s&to=%s", fromCurrency, toCurrency);
         try {
             // check cache
             String cacheKey = "LATEST:" + fromCurrency + "-" + toCurrency; // ex: LATEST:EUR-USD
-            System.out.println("CACHEKEY: " + cacheKey);
-            if (cache.contains(cacheKey)) {
-                logger.info("Cache hit for currencies: {} - {}", fromCurrency, toCurrency);
-                return Optional.of(cache.get(cacheKey));
+            CurrencyResponse cachedValue = cache.get(cacheKey);
+            if (cachedValue != null) {
+                return Optional.of(cachedValue);
             }
-            logger.info("Cache miss for currencies: {} - {}", fromCurrency, toCurrency);
             logger.info("Calling GET {}", url);
             CurrencyResponse res = restTemplate.getForObject(url, CurrencyResponse.class);
             cache.put(cacheKey, res, 60 * 60); // cache for 1h

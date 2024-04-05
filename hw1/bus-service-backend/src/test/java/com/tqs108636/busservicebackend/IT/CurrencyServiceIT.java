@@ -1,5 +1,6 @@
 package com.tqs108636.busservicebackend.IT;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -33,6 +34,6 @@ class CurrencyServiceIT {
         Optional<Float> convertedValue = currencyService.convertFromCurrencyToCurrency(10.0f, "EUR", "USD");
 
         assertTrue(convertedValue.isPresent());
-        assertTrue(cache.contains("LATEST:EUR-USD"));
+        assertNotNull(cache.get("LATEST:EUR-USD"));
     }
 }

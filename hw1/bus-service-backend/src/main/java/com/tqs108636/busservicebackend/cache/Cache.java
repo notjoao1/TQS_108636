@@ -17,6 +17,9 @@ import com.tqs108636.busservicebackend.api.CurrencyResponse;
 public class Cache {
     private Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().getClass());
 
+    private static long cacheHits = 0;
+    private static long cacheMisses = 0;
+
     private static final Map<String, CurrencyResponse> cacheMap = new HashMap<>();
     private final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(4);
 
@@ -29,11 +32,14 @@ public class Cache {
     }
 
     public CurrencyResponse get(String key) {
+        if (!cacheMap.containsKey(key)) {
+            logger.info("Cache MISS for key = {}", key);
+            cacheMisses++;
+            return null;
+        }
+        logger.info("Cache HIT for key = {}", key);
+        cacheHits++;
         return cacheMap.get(key);
-    }
-
-    public boolean contains(String key) {
-        return cacheMap.containsKey(key);
     }
 
     private void removeValue(String key) {
