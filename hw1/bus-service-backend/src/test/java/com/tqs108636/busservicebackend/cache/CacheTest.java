@@ -20,6 +20,8 @@ class CacheTest {
     void setup() {
         testCurrencyResponse = new CurrencyResponse();
         testCurrencyResponse.setBase("asdfasdfasdfasdfasdfasdfasdfasdfasdf");
+
+        cache.resetStats();
     }
 
     @Test
@@ -82,5 +84,26 @@ class CacheTest {
         assertEquals(1, cache.getStats().getCacheHits());
         assertEquals(11, cache.getStats().getCacheMisses());
 
+    }
+
+    @Test
+    void testResetStats() {
+        String KEY = "TEST5";
+        cache.put(KEY, testCurrencyResponse, 10);
+
+        cache.get(KEY);
+        cache.get(KEY);
+        cache.get(KEY);
+        cache.get(KEY);
+
+        cache.get("RANDOMUNUSEDKEY"); // miss
+
+        assertEquals(4, cache.getStats().getCacheHits());
+        assertEquals(1, cache.getStats().getCacheMisses());
+
+        cache.resetStats();
+
+        assertEquals(0, cache.getStats().getCacheHits());
+        assertEquals(0, cache.getStats().getCacheMisses());
     }
 }

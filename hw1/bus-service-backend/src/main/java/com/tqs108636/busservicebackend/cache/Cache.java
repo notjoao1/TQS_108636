@@ -51,6 +51,11 @@ public class Cache {
         return cacheMap;
     }
 
+    public void resetStats() {
+        cacheHits = 0;
+        cacheMisses = 0;
+    }
+
     private void removeValue(String key) {
         cacheMap.remove(key);
     }

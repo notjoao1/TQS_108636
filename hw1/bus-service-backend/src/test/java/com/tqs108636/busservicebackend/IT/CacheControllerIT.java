@@ -1,6 +1,7 @@
 package com.tqs108636.busservicebackend.IT;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -32,6 +33,13 @@ class CacheControllerIT {
 
     @Test
     void testGetCacheStats() {
+        // make sure stats are 0
+        restTemplate.exchange(
+                "/api/cache/resetStats",
+                HttpMethod.POST,
+                null,
+                Void.class);
+
         // one conversion per trip, and first conversion to USD will cache the rate
         // there are a total of 8 trips
         restTemplate.exchange(
@@ -72,5 +80,39 @@ class CacheControllerIT {
 
         assertTrue(cachedData.containsKey("LATEST:EUR-USD"));
         assertEquals("EUR", cachedData.get("LATEST:EUR-USD").getBase());
+    }
+
+    @Test
+    void testPost_ResetCacheStats() {
+        restTemplate.exchange(
+                "/api/trips?currency=USD",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Location>>() {
+                });
+
+        ResponseEntity<CacheStatsDTO> response = restTemplate.exchange("/api/cache/stats", HttpMethod.GET, null,
+                CacheStatsDTO.class);
+
+        CacheStatsDTO cacheStats = response.getBody();
+
+        assertNotEquals(0, cacheStats.getCacheMisses());
+        assertNotEquals(0, cacheStats.getCacheHits());
+
+        restTemplate.exchange(
+                "/api/cache/resetStats",
+                HttpMethod.POST,
+                null,
+                Void.class);
+
+        ResponseEntity<CacheStatsDTO> responseAfterReset = restTemplate.exchange("/api/cache/stats", HttpMethod.GET,
+                null,
+                CacheStatsDTO.class);
+
+        // stats should be 0 now
+        CacheStatsDTO cacheStatsAfterReset = responseAfterReset.getBody();
+
+        assertEquals(0, cacheStatsAfterReset.getCacheMisses());
+        assertEquals(0, cacheStatsAfterReset.getCacheHits());
     }
 }

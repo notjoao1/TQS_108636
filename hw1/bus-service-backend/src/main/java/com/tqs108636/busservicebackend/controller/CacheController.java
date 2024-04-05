@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +31,11 @@ public class CacheController {
     @GetMapping("cached")
     public ResponseEntity<Map<String, CurrencyResponse>> getCachedData() {
         return ResponseEntity.ok(cache.getCachedData());
+    }
+
+    @PostMapping("resetStats")
+    public ResponseEntity<Void> resetCacheStats() {
+        cache.resetStats();
+        return ResponseEntity.ok().build();
     }
 }
