@@ -2,54 +2,54 @@
 -- 
 -- Since I'm using an embbedded DB, we need to seed it whenever the application starts up
 
-INSERT INTO Location (name) VALUES ('Aveiro');
-INSERT INTO Location (name) VALUES ('Porto');
-INSERT INTO Location (name) VALUES ('Braga');
-INSERT INTO Location (name) VALUES ('Faro');
+INSERT INTO location (name) VALUES ('Aveiro');
+INSERT INTO location (name) VALUES ('Porto');
+INSERT INTO location (name) VALUES ('Braga');
+INSERT INTO location (name) VALUES ('Faro');
 
-INSERT INTO Route (total_distance_km) VALUES (70);
-INSERT INTO Route (total_distance_km) VALUES (30);
-INSERT INTO Route (total_distance_km) VALUES (60);
+INSERT INTO route (total_distance_km) VALUES (70);
+INSERT INTO route (total_distance_km) VALUES (30);
+INSERT INTO route (total_distance_km) VALUES (60);
 
 
 -- Aveiro -> Porto -> Braga
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (1, 1, 0, 0);
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (2, 1, 1, 40);
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (3, 1, 2, 30);
 
 
 -- Porto -> Braga
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (2, 2, 0, 0);
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (3, 2, 1, 30);
 
 -- Aveiro -> Braga
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (1, 3, 0, 0);
-INSERT INTO Route_Stop (location_id, route_id, stop_number, distance_km_from_last_stop)
+INSERT INTO route_stop (location_id, route_id, stop_number, distance_km_from_last_stop)
     VALUES (3, 3, 1, 60);
 
 
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1719316223, DATE '1970-01-01'), 15, 20);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1711057023, DATE '1970-01-01'), 10, 20);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (2, DATEADD('SECOND', 1713279423, DATE '1970-01-01'), 8, 15);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1713693823, DATE '1970-01-01'), 6, 10);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1719967823, DATE '1970-01-01'), 10, 20);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1710535823, DATE '1970-01-01'), 15, 15);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (1, DATEADD('SECOND', 1718093823, DATE '1970-01-01'), 20, 30);
-INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
-    VALUES (3, DATEADD('SECOND', 1714967823, DATE '1970-01-01'), 10, 20);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (1, FROM_UNIXTIME(1719316223), 15, 20);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (1, FROM_UNIXTIME(1711057023), 10, 20);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (2, FROM_UNIXTIME(1713279423), 8, 15);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (1, FROM_UNIXTIME(1713693823), 6, 10);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (1, FROM_UNIXTIME(1719967823), 10, 20);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (1, FROM_UNIXTIME(1710535823), 15, 15);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (1, FROM_UNIXTIME(1718093823), 20, 30);
+INSERT INTO trip (route_id, departure_time, price_euro, number_of_seats)
+    VALUES (3, FROM_UNIXTIME(1714967823), 10, 20);
 
 
 -- Trip 1 - seats 1 and 6 taken
@@ -60,23 +60,23 @@ INSERT INTO Trip (route_id, departure_time, price_euro, number_of_seats)
 -- Trip 6 - seat 10 taken
 -- Trip 7 - seat 9 taken
 -- Trip 8 - seat 3 taken
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('3ba26311-323d-4d2d-b12d-d77dde16ca17', 3, 7, 'Client A'); 
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('750c6aa9-d0eb-4c22-873f-e769619452e7', 1, 1, 'Client B');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('9ab862f8-5cc7-4dea-b12f-eb9274c1be52', 7, 9, 'Client C');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('5c90d662-39de-43af-af86-39d916154085', 4, 5, 'Client D');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('9c50c855-0efb-41b1-8c41-0f0e44aefb8a', 2, 0, 'Client E');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('3a848b63-5f3d-4045-a54b-f324942920c9', 8, 3, 'Client F');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('e1e1a58e-cd3b-446e-96b4-cc2cf67bff76', 6, 10, 'Client G');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('3afbe2e6-2719-4be3-9525-7983f6ffc2f1', 5, 2, 'Client H');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('1b4cad37-8272-4be8-a39f-56061cd114f1', 1, 6, 'Client I');
-INSERT INTO Reservation (id, trip_id, seat_number, client_name)
-    VALUES ('08857f19-a8a6-499f-94df-e24d50c7b9dd', 3, 4, 'Client J'); 
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('3ba26311323d4d2db12dd77dde16ca17'), 3, 7, 'Client A'); 
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('750c6aa9d0eb4c22873fe769619452e7'), 1, 1, 'Client B');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('9ab862f85cc74deab12feb9274c1be52'), 7, 9, 'Client C');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('5c90d66239de43afaf8639d916154085'), 4, 5, 'Client D');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('9c50c8550efb41b18c410f0e44aefb8a'), 2, 0, 'Client E');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('3a848b635f3d4045a54bf324942920c9'), 8, 3, 'Client F');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('e1e1a58ecd3b446e96b4cc2cf67bff76'), 6, 10, 'Client G');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('3afbe2e627194be395257983f6ffc2f1'), 5, 2, 'Client H');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('1b4cad3782724be8a39f56061cd114f1'), 1, 6, 'Client I');
+INSERT INTO reservation (id, trip_id, seat_number, client_name)
+    VALUES (UNHEX('08857f19a8a6499f94dfe24d50c7b9dd'), 3, 4, 'Client J'); 
