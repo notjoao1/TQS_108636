@@ -1,0 +1,11 @@
+version: "3.3"
+services:
+  mysql:
+    image: mysql:5.7 
+    environment:
+        - MYSQL_DATABASE=tqs
+        - MYSQL_USER=tqs
+        - MYSQL_PASSWORD=tqs
+        - MYSQL_ROOT_PASSWORD=tqs
+    ports:
+      - "3306:3306"
