@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tqs108636.busservicebackend.model.Location;
 import com.tqs108636.busservicebackend.service.ILocationService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("api/locations")
 public class LocationController {
@@ -28,6 +35,11 @@ public class LocationController {
         this.locationService = locationService;
     }
 
+    @Operation(summary = "Retrieves locations", description = "Fetches all locations or locations connected to a specified location.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Locations found", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Location.class)))),
+            @ApiResponse(responseCode = "404", description = "No connected locations found")
+    })
     @GetMapping
     public ResponseEntity<List<Location>> getLocations(
             @RequestParam(name = "connectedTo") Optional<String> locationName) {

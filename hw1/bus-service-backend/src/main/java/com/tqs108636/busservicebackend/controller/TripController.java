@@ -18,6 +18,13 @@ import com.tqs108636.busservicebackend.dto.TripDTO;
 import com.tqs108636.busservicebackend.dto.TripDetailsDTO;
 import com.tqs108636.busservicebackend.service.ITripService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("api/trips")
 public class TripController {
@@ -30,6 +37,11 @@ public class TripController {
         this.tripService = tripService;
     }
 
+    @Operation(summary = "Retrieves details for a specific trip", description = "Fetches comprehensive information about a trip based on its ID, including pricing converted to the specified currency. Default currency used is EURO")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Trip details found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TripDetailsDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Trip not found")
+    })
     @GetMapping("{id}")
     public ResponseEntity<TripDetailsDTO> getTripDetails(@PathVariable("id") Long tripId,
             @RequestParam(name = "currency") Optional<String> currency) {
@@ -44,6 +56,11 @@ public class TripController {
         return ResponseEntity.ok(optionalTripDetails.get());
     }
 
+    @Operation(summary = "Retrieves a list of trips", description = "Provides flexible search for trips based on origin, destination, upcoming or not, and currency preference.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Trips found", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = TripDTO.class)))),
+            @ApiResponse(responseCode = "400", description = "Invalid search parameters (only one of 'from' or 'to' provided)")
+    })
     @GetMapping
     public ResponseEntity<List<TripDTO>> getTrips(
             @RequestParam(name = "from") Optional<String> fromLocation,

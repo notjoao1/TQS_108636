@@ -93,15 +93,13 @@ public class TripService implements ITripService {
     public List<TripDTO> findAll(String targetCurrency) {
         logger.debug("findAll Trips");
 
-        List<TripDTO> allTrips = tripRepository.findAll().stream().map(
+        return tripRepository.findAll().stream().map(
                 t -> TripDTO.builder().id(t.getId()).route(t.getRoute()).departureTime(t.getDepartureTime())
                         .price(currencyService.convertFromCurrencyToCurrency(t.getPriceEuro(), "EUR", targetCurrency)
                                 .get())
                         .numberOfSeats(t.getNumberOfSeats())
                         .build())
                 .toList();
-
-        return allTrips;
     }
 
     @Override
