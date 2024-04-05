@@ -57,4 +57,30 @@ class CacheTest {
 
         assertEquals(cache.get(KEY), testCurrencyResponse);
     }
+
+    @Test
+    void test_GetStats() {
+        String KEY = "TEST4";
+        cache.put(KEY, testCurrencyResponse, 10);
+
+        assertEquals(0, cache.getStats().getCacheHits());
+        assertEquals(0, cache.getStats().getCacheMisses());
+
+        cache.get(KEY); // should hit
+        assertEquals(1, cache.getStats().getCacheHits());
+        assertEquals(0, cache.getStats().getCacheMisses());
+
+        cache.get("RANDOMUNUSEDKEY"); // should miss
+        assertEquals(1, cache.getStats().getCacheHits());
+        assertEquals(1, cache.getStats().getCacheMisses());
+
+        // 10 more misses
+        for (int i = 0; i < 10; i++) {
+            cache.get("RANDOMUNUSEDKEY");
+        }
+
+        assertEquals(1, cache.getStats().getCacheHits());
+        assertEquals(11, cache.getStats().getCacheMisses());
+
+    }
 }

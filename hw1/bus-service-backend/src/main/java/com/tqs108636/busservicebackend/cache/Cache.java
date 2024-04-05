@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.tqs108636.busservicebackend.api.CurrencyResponse;
+import com.tqs108636.busservicebackend.dto.CacheStatsDTO;
 
 @Component("cache")
 public class Cache {
@@ -40,6 +41,14 @@ public class Cache {
         logger.info("Cache HIT for key = {}", key);
         cacheHits++;
         return cacheMap.get(key);
+    }
+
+    public CacheStatsDTO getStats() {
+        return new CacheStatsDTO(cacheHits, cacheMisses);
+    }
+
+    public Map<String, CurrencyResponse> getCachedData() {
+        return cacheMap;
     }
 
     private void removeValue(String key) {
