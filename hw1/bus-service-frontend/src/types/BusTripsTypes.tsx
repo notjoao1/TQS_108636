@@ -21,7 +21,7 @@ export interface ITrip {
   route: IRoute;
   departureTime: Date;
   numberOfSeats: number;
-  priceEuro: number;
+  price: number;
 }
 
 export interface ITripDetails {
@@ -29,7 +29,7 @@ export interface ITripDetails {
   route: IRoute;
   departureTime: Date;
   numberOfSeats: number;
-  priceEuro: number;
+  price: number;
   availableSeatNumbers: number[];
 }
 

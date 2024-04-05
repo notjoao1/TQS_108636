@@ -5,8 +5,13 @@ import { Link } from "react-router-dom";
 import { getRouteStopsString } from "../utils/RouteUtils";
 
 const TripList = () => {
-  const { selectedDepartureCity, selectedArrivalCity, trips, setTrips } =
-    useContext(BusTripsContext) || {};
+  const {
+    selectedDepartureCity,
+    selectedArrivalCity,
+    trips,
+    setTrips,
+    currency,
+  } = useContext(BusTripsContext) || {};
 
   useEffect(() => {
     if (!selectedArrivalCity) {
@@ -15,21 +20,23 @@ const TripList = () => {
     }
 
     const fetchTripsForSelectedCities = async () => {
+      console.log("FETCHING TRIPS, SELECTED CURRENCY: ", currency);
       try {
         const res = await fetch(
-          `http://localhost:8080/api/trips?from=${selectedDepartureCity?.name}&to=${selectedArrivalCity?.name}&upcoming=True`
+          `http://localhost:8080/api/trips?from=${selectedDepartureCity?.name}&to=${selectedArrivalCity?.name}&upcoming=True&currency=${currency}`
         );
         if (!res.ok) throw new Error(res.statusText);
 
         const data = (await res.json()) as ITrip[];
         setTrips?.(data);
+        console.log("merda", data);
       } catch (error) {
         console.error("Error fetching UPCOMING TRIPS:", error);
       }
     };
 
     fetchTripsForSelectedCities();
-  }, [selectedArrivalCity]);
+  }, [selectedArrivalCity, currency]);
 
   if (!selectedArrivalCity) return;
 
@@ -63,7 +70,10 @@ const TripList = () => {
                         Leaves at: {new Date(t.departureTime).toLocaleString()}
                       </p>
                       <p>Distance: {t.route.totalDistanceKm}km</p>
-                      <p>Price: {t.priceEuro} EUR</p>
+                      <p>
+                        Price: {t.price}{" "}
+                        <span className="text-yellow-500">{currency}</span>
+                      </p>
                       <div className="card-actions justify-end">
                         <Link
                           className="btn btn-primary"
