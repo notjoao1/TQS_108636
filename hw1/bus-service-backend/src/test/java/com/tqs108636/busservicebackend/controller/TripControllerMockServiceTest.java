@@ -116,6 +116,19 @@ class TripControllerMockServiceTest {
         }
 
         @Test
+        void testGetAllTrips() throws Exception {
+                when(tripService.findAll("EUR"))
+                                .thenReturn(Arrays.asList(trip1, trip2, trip3, trip4, trip5, trip6, trip7, trip8));
+
+                mockMvc.perform(get("/api/trips")).andExpectAll(
+                                status().isOk(),
+                                jsonPath("$", hasSize(8)));
+
+                verify(tripService, times(1)).findAll("EUR");
+
+        }
+
+        @Test
         void testGetAllTrips_FromAveiro_ToBraga() throws Exception {
                 when(tripService.findAllTripsByRoute(locAveiro.getName(), locBraga.getName(), "EUR"))
                                 .thenReturn(Arrays.asList(trip1, trip2, trip4, trip5, trip6, trip7, trip8));

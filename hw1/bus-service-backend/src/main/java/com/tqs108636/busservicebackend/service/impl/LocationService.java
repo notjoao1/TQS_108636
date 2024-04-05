@@ -34,12 +34,6 @@ public class LocationService implements ILocationService {
     }
 
     @Override
-    public Optional<Location> findLocationById(Long id) {
-        logger.debug("Finding location by id - {}", id);
-        return locationRepository.findById(id);
-    }
-
-    @Override
     public List<Location> findAll() {
         logger.debug("Finding all locations");
         return locationRepository.findAll();

@@ -118,6 +118,20 @@ class TripServiceMockRepoTest {
         }
 
         @Test
+        void testFindAllTrips() {
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(10f));
+                when(tripRepository.findAll())
+                                .thenReturn(Arrays.asList(trip1, trip2, trip3, trip4, trip5, trip6, trip7, trip8));
+
+                List<TripDTO> allTrips = tripService.findAll("EUR");
+
+                assertEquals(8, allTrips.size());
+
+                verify(tripRepository, times(1)).findAll();
+        }
+
+        @Test
         void testFindTrips_FromAveiro_ToBraga() {
                 when(routeService.findRouteFromLocationToLocation(locAveiro.getName(), locBraga.getName()))
                                 .thenReturn(Arrays.asList(route1, route3));
