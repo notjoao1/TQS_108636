@@ -60,7 +60,7 @@ public class TripController {
 
         // both empty
         if (fromLocation.isEmpty() && toLocation.isEmpty())
-            return ResponseEntity.ok(tripService.findAll("EUR"));
+            return ResponseEntity.ok(tripService.findAll(targetCurrency));
 
         if (upcoming.isEmpty()) {
             List<TripDTO> tripsByRoute = tripService.findAllTripsByRoute(fromLocation.get(), toLocation.get(),
