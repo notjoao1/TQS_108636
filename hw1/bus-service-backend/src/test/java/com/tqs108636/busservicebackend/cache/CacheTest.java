@@ -1,6 +1,7 @@
 package com.tqs108636.busservicebackend.cache;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.concurrent.TimeUnit;
@@ -21,7 +22,7 @@ class CacheTest {
         testCurrencyResponse = new CurrencyResponse();
         testCurrencyResponse.setBase("asdfasdfasdfasdfasdfasdfasdfasdfasdf");
 
-        cache.resetStats();
+        cache.reset();
     }
 
     @Test
@@ -87,7 +88,7 @@ class CacheTest {
     }
 
     @Test
-    void testResetStats() {
+    void testResetCache() {
         String KEY = "TEST5";
         cache.put(KEY, testCurrencyResponse, 10);
 
@@ -100,10 +101,12 @@ class CacheTest {
 
         assertEquals(4, cache.getStats().getCacheHits());
         assertEquals(1, cache.getStats().getCacheMisses());
+        assertNotNull(cache.get(KEY));
 
-        cache.resetStats();
+        cache.reset();
 
         assertEquals(0, cache.getStats().getCacheHits());
         assertEquals(0, cache.getStats().getCacheMisses());
+        assertNull(cache.get(KEY));
     }
 }

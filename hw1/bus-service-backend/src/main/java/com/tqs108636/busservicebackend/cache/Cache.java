@@ -51,7 +51,13 @@ public class Cache {
         return cacheMap;
     }
 
-    public void resetStats() {
+    // completely clears cache and stats
+    public void reset() {
+        resetStats();
+        cacheMap.clear();
+    }
+
+    private void resetStats() {
         cacheHits = 0;
         cacheMisses = 0;
     }

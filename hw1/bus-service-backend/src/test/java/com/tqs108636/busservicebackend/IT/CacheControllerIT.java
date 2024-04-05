@@ -7,7 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -20,9 +24,10 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.tqs108636.busservicebackend.api.CurrencyResponse;
 import com.tqs108636.busservicebackend.dto.CacheStatsDTO;
-import com.tqs108636.busservicebackend.model.Location;
+import com.tqs108636.busservicebackend.dto.TripDTO;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(OrderAnnotation.class)
 @TestPropertySource(locations = "classpath:application_it.properties")
 class CacheControllerIT {
     @LocalServerPort
@@ -31,22 +36,25 @@ class CacheControllerIT {
     @Autowired
     TestRestTemplate restTemplate;
 
-    @Test
-    void testGetCacheStats() {
-        // make sure stats are 0
+    @BeforeEach
+    void resetCache() {
         restTemplate.exchange(
-                "/api/cache/resetStats",
+                "/api/cache/reset",
                 HttpMethod.POST,
                 null,
                 Void.class);
+    }
 
+    @Test
+    @Order(1)
+    void testGetCacheStats() {
         // one conversion per trip, and first conversion to USD will cache the rate
         // there are a total of 8 trips
         restTemplate.exchange(
                 "/api/trips?currency=USD",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Location>>() {
+                new ParameterizedTypeReference<List<TripDTO>>() {
                 });
 
         ResponseEntity<CacheStatsDTO> response = restTemplate.exchange("/api/cache/stats", HttpMethod.GET, null,
@@ -61,13 +69,14 @@ class CacheControllerIT {
     }
 
     @Test
+    @Order(2)
     void testGetCachedData() {
         // should cache "EUR" - "USD" currency API response
         restTemplate.exchange(
                 "/api/trips?currency=USD",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Location>>() {
+                new ParameterizedTypeReference<List<TripDTO>>() {
                 });
 
         ResponseEntity<Map<String, CurrencyResponse>> response = restTemplate.exchange("/api/cache/cached",
@@ -83,12 +92,13 @@ class CacheControllerIT {
     }
 
     @Test
-    void testPost_ResetCacheStats() {
+    @Order(3)
+    void testPost_ResetCache() {
         restTemplate.exchange(
                 "/api/trips?currency=USD",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Location>>() {
+                new ParameterizedTypeReference<List<TripDTO>>() {
                 });
 
         ResponseEntity<CacheStatsDTO> response = restTemplate.exchange("/api/cache/stats", HttpMethod.GET, null,
@@ -96,11 +106,22 @@ class CacheControllerIT {
 
         CacheStatsDTO cacheStats = response.getBody();
 
+        // check misses before reset
         assertNotEquals(0, cacheStats.getCacheMisses());
         assertNotEquals(0, cacheStats.getCacheHits());
 
+        ResponseEntity<Map<String, CurrencyResponse>> responseCachedData = restTemplate.exchange("/api/cache/cached",
+                HttpMethod.GET, null,
+                new ParameterizedTypeReference<Map<String, CurrencyResponse>>() {
+
+                });
+
+        Map<String, CurrencyResponse> cachedData = responseCachedData.getBody();
+
+        assertTrue(cachedData.containsKey("LATEST:EUR-USD"));
+
         restTemplate.exchange(
-                "/api/cache/resetStats",
+                "/api/cache/reset",
                 HttpMethod.POST,
                 null,
                 Void.class);
@@ -114,5 +135,16 @@ class CacheControllerIT {
 
         assertEquals(0, cacheStatsAfterReset.getCacheMisses());
         assertEquals(0, cacheStatsAfterReset.getCacheHits());
+
+        ResponseEntity<Map<String, CurrencyResponse>> responseCachedDataAfterReset = restTemplate.exchange(
+                "/api/cache/cached",
+                HttpMethod.GET, null,
+                new ParameterizedTypeReference<Map<String, CurrencyResponse>>() {
+
+                });
+
+        Map<String, CurrencyResponse> cachedDataAfterReset = responseCachedDataAfterReset.getBody();
+
+        assertTrue(cachedDataAfterReset.isEmpty());
     }
 }

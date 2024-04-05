@@ -33,9 +33,9 @@ public class CacheController {
         return ResponseEntity.ok(cache.getCachedData());
     }
 
-    @PostMapping("resetStats")
-    public ResponseEntity<Void> resetCacheStats() {
-        cache.resetStats();
+    @PostMapping("reset")
+    public ResponseEntity<Void> resetCache() {
+        cache.reset();
         return ResponseEntity.ok().build();
     }
 }
