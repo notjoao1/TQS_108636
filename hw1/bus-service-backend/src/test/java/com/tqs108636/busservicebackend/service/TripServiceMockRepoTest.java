@@ -194,9 +194,11 @@ class TripServiceMockRepoTest {
         void testGetTripDetails_WithTakenSeats() {
                 when(tripRepository.findById(anyLong())).thenReturn(Optional.of(trip1));
                 when(reservationRepository.findTakenSeatNumbersByTrip(trip1)).thenReturn(Arrays.asList(6, 12));
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(10f));
 
                 // trip1 has 20 seats and 2 are taken - 18 available
-                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip1.getId());
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip1.getId(), "EUR");
 
                 assertTrue(optTripDetails.isPresent());
 
@@ -217,9 +219,11 @@ class TripServiceMockRepoTest {
         void testGetTripDetails_WithNoTakenSeats() {
                 when(tripRepository.findById(anyLong())).thenReturn(Optional.of(trip2));
                 when(reservationRepository.findTakenSeatNumbersByTrip(trip2)).thenReturn(new ArrayList<>());
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(10f));
 
                 // trip2 has 20 seats and 2 are taken - 18 available
-                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip2.getId());
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip2.getId(), "EUR");
 
                 assertTrue(optTripDetails.isPresent());
 
@@ -237,10 +241,85 @@ class TripServiceMockRepoTest {
         void testGetTripDetails_InvalidTripId() {
                 when(tripRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(100L);
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(100L, "EUR");
 
                 assertTrue(optTripDetails.isEmpty());
 
                 verify(reservationRepository, times(0)).findTakenSeatNumbersByTrip(any());
+                verify(currencyService, times(0)).convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString());
         }
+
+        @Test
+        void testFindTrips_FromAveiro_ToBraga_CurrencyUSD() {
+                when(routeService.findRouteFromLocationToLocation(locAveiro.getName(), locBraga.getName()))
+                                .thenReturn(Arrays.asList(route1, route3));
+                when(tripRepository.findByRoute(route1))
+                                .thenReturn(Arrays.asList(trip1, trip2, trip4, trip5, trip6, trip7));
+                when(tripRepository.findByRoute(route3))
+                                .thenReturn(Arrays.asList(trip8));
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(11.123123f));
+
+                List<TripDTO> trips = tripService.findAllTripsByRoute(locAveiro.getName(), locBraga.getName(), "USD");
+
+                assertEquals(7, trips.size());
+                assertTrue(trips.stream().allMatch((t) -> t.getRoute().getId() == route1.getId()
+                                || t.getRoute().getId() == route3.getId()));
+                assertTrue(trips.stream().allMatch(t -> t.getPrice() == 11.123123f));
+
+                verify(tripRepository, times(1)).findByRoute(route1);
+                verify(tripRepository, times(1)).findByRoute(route3);
+                verify(routeService, times(1)).findRouteFromLocationToLocation(locAveiro.getName(), locBraga.getName());
+                verify(currencyService, times(7)).convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString());
+        }
+
+        @Test
+        void testFindUpcomingTrips_FromAveiro_ToBraga_CurrencyUSD() {
+                when(routeService.findRouteFromLocationToLocation(locAveiro.getName(), locBraga.getName()))
+                                .thenReturn(Arrays.asList(route1, route3));
+                when(tripRepository.findUpcomingTripsByRoute(route1))
+                                .thenReturn(Arrays.asList(trip1, trip4, trip5, trip6, trip7));
+                when(tripRepository.findUpcomingTripsByRoute(route3))
+                                .thenReturn(new ArrayList<>());
+                when(currencyService.convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString()))
+                                .thenReturn(Optional.of(123123f));
+
+                List<TripDTO> upcomingTrips = tripService.findUpcomingTripsByRoute(locAveiro.getName(),
+                                locBraga.getName(), "EUR");
+
+                assertEquals(5, upcomingTrips.size());
+                assertTrue(upcomingTrips.stream().allMatch(t -> t.getDepartureTime().compareTo(LocalDateTime
+                                .ofEpochSecond(CURRENT_TIME_SECONDS, 0, ZoneOffset.UTC)) > 0));
+                assertTrue(upcomingTrips.stream().allMatch(t -> t.getPrice() == 123123f));
+
+                verify(routeService, times(1)).findRouteFromLocationToLocation(locAveiro.getName(), locBraga.getName());
+                verify(tripRepository, times(1)).findUpcomingTripsByRoute(route1);
+                verify(currencyService, times(5)).convertFromCurrencyToCurrency(anyFloat(), anyString(), anyString());
+
+        }
+
+        @Test
+        void testGetTripDetails_CurrencyUSD() {
+                when(tripRepository.findById(anyLong())).thenReturn(Optional.of(trip2));
+                when(reservationRepository.findTakenSeatNumbersByTrip(trip2)).thenReturn(new ArrayList<>());
+                when(currencyService.convertFromCurrencyToCurrency(trip2.getPriceEuro(), "EUR", "USD"))
+                                .thenReturn(Optional.of(151515f));
+
+                // trip2 has 20 seats and 2 are taken - 18 available
+                Optional<TripDetailsDTO> optTripDetails = tripService.getTripDetails(trip2.getId(), "USD");
+
+                assertTrue(optTripDetails.isPresent());
+
+                TripDetailsDTO tripDetailsDTO = optTripDetails.get();
+
+                assertEquals(tripDetailsDTO.getId(), trip2.getId());
+                assertEquals(tripDetailsDTO.getRoute(), trip2.getRoute());
+                assertEquals(151515f, tripDetailsDTO.getPrice());
+
+                assertEquals(20, tripDetailsDTO.getAvailableSeatNumbers().size());
+
+                verify(reservationRepository, times(1)).findTakenSeatNumbersByTrip(any());
+                verify(currencyService, times(1)).convertFromCurrencyToCurrency(trip2.getPriceEuro(), "EUR", "USD");
+        }
+
 }

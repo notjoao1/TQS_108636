@@ -179,24 +179,24 @@ class TripControllerMockServiceTest {
 
         @Test
         void testGetTripDetails_ValidTrip() throws Exception {
-                when(tripService.getTripDetails(anyLong())).thenReturn(Optional.of(tripDetailsDTO1));
+                when(tripService.getTripDetails(anyLong(), anyString())).thenReturn(Optional.of(tripDetailsDTO1));
 
                 mockMvc.perform(get("/api/trips/1")).andExpectAll(
                                 status().isOk(),
                                 jsonPath("$.id").value(trip1.getId()),
                                 jsonPath("$.availableSeatNumbers", hasSize(5)));
 
-                verify(tripService, times(1)).getTripDetails(anyLong());
+                verify(tripService, times(1)).getTripDetails(anyLong(), anyString());
         }
 
         @Test
         void testGetTripDetails_InvalidTrip() throws Exception {
-                when(tripService.getTripDetails(anyLong())).thenReturn(Optional.empty());
+                when(tripService.getTripDetails(anyLong(), anyString())).thenReturn(Optional.empty());
 
                 mockMvc.perform(get("/api/trips/10000")).andExpectAll(
                                 status().isNotFound(),
                                 jsonPath("$").doesNotExist());
 
-                verify(tripService, times(1)).getTripDetails(anyLong());
+                verify(tripService, times(1)).getTripDetails(anyLong(), anyString());
         }
 }

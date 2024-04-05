@@ -31,9 +31,12 @@ public class TripController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<TripDetailsDTO> getTripDetails(@PathVariable("id") Long tripId) {
+    public ResponseEntity<TripDetailsDTO> getTripDetails(@PathVariable("id") Long tripId,
+            @RequestParam(name = "currency") Optional<String> currency) {
         logger.info("GET /api/trips/{}'", tripId);
-        Optional<TripDetailsDTO> optionalTripDetails = tripService.getTripDetails(tripId);
+        String targetCurrency = currency.orElse("EUR");
+
+        Optional<TripDetailsDTO> optionalTripDetails = tripService.getTripDetails(tripId, targetCurrency);
 
         if (optionalTripDetails.isEmpty())
             return ResponseEntity.notFound().build();

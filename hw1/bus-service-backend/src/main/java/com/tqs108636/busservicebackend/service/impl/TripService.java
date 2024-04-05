@@ -105,7 +105,7 @@ public class TripService implements ITripService {
     }
 
     @Override
-    public Optional<TripDetailsDTO> getTripDetails(Long tripId) {
+    public Optional<TripDetailsDTO> getTripDetails(Long tripId, String targetCurrency) {
         logger.debug("getTripDetails, for trip ID = {}", tripId);
 
         Optional<Trip> optionalTrip = tripRepository.findById(tripId);
@@ -124,7 +124,8 @@ public class TripService implements ITripService {
                 .collect(Collectors.toList());
 
         TripDetailsDTO tripDetailsDTO = new TripDetailsDTO(trip.getId(), trip.getRoute(), trip.getDepartureTime(),
-                trip.getPriceEuro(), trip.getNumberOfSeats(), availableSeatNumbers);
+                currencyService.convertFromCurrencyToCurrency(trip.getPriceEuro(), "EUR", targetCurrency).get(),
+                trip.getNumberOfSeats(), availableSeatNumbers);
 
         logger.debug("Available seat numbers for trip ID = {} -> {}", tripId, availableSeatNumbers);
 

@@ -13,5 +13,5 @@ public interface ITripService {
 
     List<TripDTO> findAll(String targetCurrency);
 
-    Optional<TripDetailsDTO> getTripDetails(Long tripId);
+    Optional<TripDetailsDTO> getTripDetails(Long tripId, String targetCurrency);
 }

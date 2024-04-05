@@ -18,7 +18,7 @@ public class TripDetailsDTO {
     private Long id;
     private Route route;
     private LocalDateTime departureTime;
-    private float priceEuro;
+    private float price;
     private int numberOfSeats;
     private List<Integer> availableSeatNumbers; // includes this extra field
 }
