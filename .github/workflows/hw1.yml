@@ -28,4 +28,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: cd hw1/bus-service-backend && mvn -B integration-test --file pom.xml
+      run: cd hw1/bus-service-backend && mvn -B clean verify --file pom.xml
