@@ -84,6 +84,8 @@ class TripRepositoryTest {
         sortedTrips.sort(new TripComparator());
 
         assertEquals(sortedTrips, upcomingTrips); // upcoming trips should be sorted by default
+        // assert that all trips are actually "upcoming" (departureTime > time now)
+        assertTrue(upcomingTrips.stream().allMatch(t -> t.getDepartureTime().compareTo(LocalDateTime.now()) > 0));
         assertTrue(upcomingTrips.stream().allMatch((t) -> t.getRoute().getId() == route1.getId()));
         assertFalse(upcomingTrips.contains(trip2)); // trip2 happened in the past
     }
