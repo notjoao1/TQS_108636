@@ -12,7 +12,6 @@ const ReservationDetailsPage = () => {
   );
 
   const handleConfirmButton = () => {
-    console.log(reservationToken);
     fetch(`http://localhost:8080/api/reservations/${reservationToken}`)
       .then((response) => {
         if (!response.ok) {
@@ -22,7 +21,6 @@ const ReservationDetailsPage = () => {
       })
       .then((data: IReservation) => {
         setReservationData(data);
-        console.log(data);
         setConfirmed(true);
       })
       .catch((error) => {

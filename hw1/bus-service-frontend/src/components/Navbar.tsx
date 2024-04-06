@@ -21,7 +21,7 @@ const Navbar = () => {
     <div className="navbar bg-base-300 rounded-box">
       <div className="flex-1 px-2 lg:flex-none">
         <button className="btn btn-ghost text-xl">
-          <Link to={"/"}>Home</Link>
+          <Link to={"/"}>FusBlix</Link>
         </button>
         <button className="btn btn-ghost text-xl">
           <Link to={"/reservation_details"}>Reservation Details</Link>

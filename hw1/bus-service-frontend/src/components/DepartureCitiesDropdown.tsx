@@ -25,6 +25,7 @@ export const DepartureCitiesDropdown = () => {
         if (!res.ok) throw new Error(res.statusText);
 
         const data = (await res.json()) as ICity[];
+        data.sort((l1, l2) => l1.id - l2.id);
         setArrivalCities?.(data);
       } catch (error) {
         console.error("Error fetching CONNECTED locations:", error);

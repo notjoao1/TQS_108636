@@ -13,16 +13,27 @@ const ReserveTripContent: React.FC<ReserveTripContentProps> = (
 ) => {
   const navigate = useNavigate();
 
-  const { tripDetails, setTripDetails } = useContext(BusTripsContext) || {};
+  const {
+    tripDetails,
+    setTripDetails,
+    selectedDepartureCity,
+    selectedArrivalCity,
+    currency,
+  } = useContext(BusTripsContext) || {};
+
   const tripId = props.tripId;
+
   useEffect(() => {
     const fetchTripDetails = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/trips/${tripId}`);
+        const res = await fetch(
+          `http://localhost:8080/api/trips/${tripId}?currency=${currency}`
+        );
         if (!res.ok) throw new Error(res.statusText);
 
         const data = (await res.json()) as ITripDetails;
         setTripDetails?.(data);
+        setSeatNumber(data.availableSeatNumbers[0].toString());
       } catch (error) {
         console.error("Error fetching CONNECTED locations:", error);
       }
@@ -69,20 +80,18 @@ const ReserveTripContent: React.FC<ReserveTripContentProps> = (
       <h2 className="text-4xl">
         Reservation for a trip from{" "}
         <span className="font-bold text-cyan-800">
-          {tripDetails?.route.routeStops[0].location.name}
+          {selectedDepartureCity?.name}
         </span>{" "}
         to{" "}
         <span className="font-bold text-blue-800">
-          {
-            tripDetails?.route.routeStops[
-              tripDetails?.route.routeStops.length - 1
-            ].location.name
-          }
+          {selectedArrivalCity?.name}
         </span>
       </h2>
       <div className="pt-4 pl-4 pb-10">
         <p>Trip Number: {tripDetails?.id}</p>
-        <p>Cost: {tripDetails?.priceEuro} EUR</p>
+        <p>
+          Cost: {tripDetails?.price} {currency}
+        </p>
         <p>
           Departure: {new Date(tripDetails?.departureTime).toLocaleString()}
         </p>
@@ -151,7 +160,9 @@ const ReserveTripContent: React.FC<ReserveTripContentProps> = (
             onChange={(e) => setSeatNumber(e.target.value)}
           >
             {tripDetails?.availableSeatNumbers.map((n) => (
-              <option key={n}>{n}</option>
+              <option value={n} key={n}>
+                {n}
+              </option>
             ))}
           </select>
         </div>

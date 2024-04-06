@@ -28,9 +28,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BusTripsContextProvider>
-      <RouterProvider router={router} />
-    </BusTripsContextProvider>
-  </React.StrictMode>
+  <BusTripsContextProvider>
+    <RouterProvider router={router} />
+  </BusTripsContextProvider>
 );

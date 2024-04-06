@@ -20,7 +20,6 @@ const TripList = () => {
     }
 
     const fetchTripsForSelectedCities = async () => {
-      console.log("FETCHING TRIPS, SELECTED CURRENCY: ", currency);
       try {
         const res = await fetch(
           `http://localhost:8080/api/trips?from=${selectedDepartureCity?.name}&to=${selectedArrivalCity?.name}&upcoming=True&currency=${currency}`
@@ -29,7 +28,6 @@ const TripList = () => {
 
         const data = (await res.json()) as ITrip[];
         setTrips?.(data);
-        console.log("merda", data);
       } catch (error) {
         console.error("Error fetching UPCOMING TRIPS:", error);
       }
