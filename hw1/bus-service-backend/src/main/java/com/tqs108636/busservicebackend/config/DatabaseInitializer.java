@@ -38,9 +38,9 @@ public class DatabaseInitializer {
 
         try {
             logger.info("---- DATABASE INITIALIZATION START ----");
-            int count = jdbcTemplate.queryForObject(query, Integer.class);
+            Integer count = jdbcTemplate.queryForObject(query, Integer.class);
             logger.debug("Size of location table - {}", count);
-            if (count == 0) {
+            if (count != null && count.intValue() == 0) {
                 logger.info("Database is empty, initializing database with initial data defined in 'init-data.sql'");
                 populator.populate(dataSource.getConnection());
                 logger.info("Finished initializing database...");
