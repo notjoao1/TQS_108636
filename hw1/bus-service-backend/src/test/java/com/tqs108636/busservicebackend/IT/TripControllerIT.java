@@ -27,153 +27,153 @@ import com.tqs108636.busservicebackend.dto.TripDTO;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application_it.properties")
 class TripControllerIT {
-    @LocalServerPort
-    int serverPort;
+        @LocalServerPort
+        int serverPort;
 
-    @Autowired
-    TestRestTemplate restTemplate;
+        @Autowired
+        TestRestTemplate restTemplate;
 
-    @Test
-    void testGetAllTrips() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllTrips() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<TripDTO> tripResponse = response.getBody();
-        assertEquals(8, tripResponse.size());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                List<TripDTO> tripResponse = response.getBody();
+                assertEquals(8, tripResponse.size());
+        }
 
-    @Test
-    void testGetAllTrips_FromAveiro_ToBraga() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?from=Aveiro&to=Braga",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllTrips_FromAveiro_ToBraga() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?from=Aveiro&to=Braga",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<TripDTO> tripResponse = response.getBody();
-        assertEquals(7, tripResponse.size());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                List<TripDTO> tripResponse = response.getBody();
+                assertEquals(7, tripResponse.size());
+        }
 
-    @Test
-    void testGetAllTrips_FromAveiro_ToNull() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?from=Aveiro",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllTrips_FromAveiro_ToNull() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?from=Aveiro",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        List<TripDTO> tripResponse = response.getBody();
-        assertNull(tripResponse);
-    }
+                assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+                List<TripDTO> tripResponse = response.getBody();
+                assertNull(tripResponse);
+        }
 
-    @Test
-    void testGetAllTrips_FromNull_ToBraga() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?to=Braga",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllTrips_FromNull_ToBraga() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?to=Braga",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        List<TripDTO> tripResponse = response.getBody();
-        assertNull(tripResponse); // empty response
-    }
+                assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+                List<TripDTO> tripResponse = response.getBody();
+                assertNull(tripResponse); // empty response
+        }
 
-    @Test
-    void testGetAllUpcomingTrips_FromAveiro_ToBraga() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?from=Aveiro&to=Braga&upcoming=true",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllUpcomingTrips_FromAveiro_ToBraga() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?from=Aveiro&to=Braga&upcoming=true",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        final long CURRENT_TIME_SECONDS = Instant.now().getEpochSecond();
+                final long CURRENT_TIME_SECONDS = 1712420471;
 
-        List<TripDTO> tripResponse = response.getBody();
+                List<TripDTO> tripResponse = response.getBody();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(5, tripResponse.size());
-        assertTrue(tripResponse.stream().allMatch(t -> t.getDepartureTime()
-                .compareTo(LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS, 0, ZoneOffset.UTC)) > 0));
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertEquals(5, tripResponse.size());
+                assertTrue(tripResponse.stream().allMatch(t -> t.getDepartureTime()
+                                .compareTo(LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS, 0, ZoneOffset.UTC)) > 0));
+        }
 
-    @Test
-    void testGetAllUpcomingTrips_FromBraga_ToFaro() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?from=Braga&to=Faro&upcoming=true",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllUpcomingTrips_FromBraga_ToFaro() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?from=Braga&to=Faro&upcoming=true",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        List<TripDTO> tripResponse = response.getBody();
+                List<TripDTO> tripResponse = response.getBody();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(tripResponse.isEmpty());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertTrue(tripResponse.isEmpty());
+        }
 
-    @Test
-    void testGetAllTrips_CurrencyUSD() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?currency=USD",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllTrips_CurrencyUSD() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?currency=USD",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        List<TripDTO> tripResponse = response.getBody();
+                List<TripDTO> tripResponse = response.getBody();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertFalse(tripResponse.isEmpty());
-        assertEquals(8, tripResponse.size());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertFalse(tripResponse.isEmpty());
+                assertEquals(8, tripResponse.size());
+        }
 
-    @Test
-    void testGetAllTrips_FromAveiro_ToBraga_CurrencyKRW() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?from=Aveiro&to=Braga&currency=KRW",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllTrips_FromAveiro_ToBraga_CurrencyKRW() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?from=Aveiro&to=Braga&currency=KRW",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<TripDTO> tripResponse = response.getBody();
-        assertEquals(7, tripResponse.size());
-        // this works if rate from KRW/EUR > 17 (its 1463 now)
-        // lowest EUR price is 6€ and highest is 20€
-        // we are checking if all prices are greater than 100KRW
-        assertTrue(tripResponse.stream().allMatch(t -> t.getPrice() > 100.0f));
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                List<TripDTO> tripResponse = response.getBody();
+                assertEquals(7, tripResponse.size());
+                // this works if rate from KRW/EUR > 17 (its 1463 now)
+                // lowest EUR price is 6€ and highest is 20€
+                // we are checking if all prices are greater than 100KRW
+                assertTrue(tripResponse.stream().allMatch(t -> t.getPrice() > 100.0f));
+        }
 
-    @Test
-    void testGetAllUpcomingTrips_FromAveiro_ToBraga_CurrencyKRW() {
-        ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
-                "/api/trips?from=Aveiro&to=Braga&upcoming=true&currency=KRW",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<TripDTO>>() {
-                });
+        @Test
+        void testGetAllUpcomingTrips_FromAveiro_ToBraga_CurrencyKRW() {
+                ResponseEntity<List<TripDTO>> response = restTemplate.exchange(
+                                "/api/trips?from=Aveiro&to=Braga&upcoming=true&currency=KRW",
+                                HttpMethod.GET,
+                                null,
+                                new ParameterizedTypeReference<List<TripDTO>>() {
+                                });
 
-        final long CURRENT_TIME_SECONDS = Instant.now().getEpochSecond();
+                final long CURRENT_TIME_SECONDS = 1712420471;
 
-        List<TripDTO> tripResponse = response.getBody();
+                List<TripDTO> tripResponse = response.getBody();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(5, tripResponse.size());
-        assertTrue(tripResponse.stream().allMatch(t -> t.getDepartureTime()
-                .compareTo(LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS, 0, ZoneOffset.UTC)) > 0));
-        assertTrue(tripResponse.stream().allMatch(t -> t.getPrice() > 100.0f));
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertEquals(5, tripResponse.size());
+                assertTrue(tripResponse.stream().allMatch(t -> t.getDepartureTime()
+                                .compareTo(LocalDateTime.ofEpochSecond(CURRENT_TIME_SECONDS, 0, ZoneOffset.UTC)) > 0));
+                assertTrue(tripResponse.stream().allMatch(t -> t.getPrice() > 100.0f));
+        }
 }
