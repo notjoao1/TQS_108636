@@ -32,7 +32,6 @@ class ReservationControllerIT {
 
     @Test
     void testGetReservationDetails_ValidUUID() {
-
         // INSERT INTO Reservation (id, trip_id, seatNumber, clientName)
         // VALUES ('3ba26311-323d-4d2d-b12d-d77dde16ca17', 3, 7, 'Client A');
         UUID uuid = UUID.fromString("3ba26311-323d-4d2d-b12d-d77dde16ca17");
